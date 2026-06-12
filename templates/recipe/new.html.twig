@@ -1,0 +1,354 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <style>
+        main {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 36px 32px 96px;
+        }
+
+        .form-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .form-bar__actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .title-input {
+            width: 100%;
+            font-family: var(--font-display);
+            font-size: 40px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            border: none;
+            background: none;
+            color: var(--ink);
+            outline: none;
+            padding: 6px 0 14px;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 30px;
+        }
+
+        .title-input::placeholder {
+            color: var(--faint);
+        }
+
+        .field {
+            margin-bottom: 30px;
+        }
+
+        .field__label {
+            font-family: var(--font-mono);
+            font-size: var(--fs-label);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .photo-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .photo-thumb {
+            position: relative;
+            width: 120px;
+            height: 90px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-thumb__remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 22px;
+            height: 22px;
+            border-radius: var(--radius-pill);
+            border: none;
+            background: var(--surface);
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1;
+            display: grid;
+            place-items: center;
+            box-shadow: var(--shadow-float);
+        }
+
+        .photo-add {
+            width: 120px;
+            height: 90px;
+            border: 1px dashed var(--line);
+            border-radius: var(--radius-md);
+            background: none;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: var(--fs-label);
+            color: var(--muted);
+        }
+
+        .visibility {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .seg {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .seg--on {
+            background: var(--accent);
+            color: var(--on-accent);
+            border-color: transparent;
+        }
+
+        .ingredient-list, .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ingredient-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ingredient-row .input--amount {
+            width: 110px;
+            flex: none;
+        }
+
+        .row-remove {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            border: 1px solid var(--line);
+            background: none;
+            cursor: pointer;
+            color: var(--faint);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .step-list {
+            gap: 12px;
+        }
+
+        .step-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .step-row__n {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 500;
+            color: var(--accent);
+            min-width: 30px;
+            padding-top: 6px;
+        }
+
+        .add-row {
+            margin-top: 12px;
+            background: none;
+            border: 1px dashed var(--line);
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .tag-field {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--ink);
+            background: var(--surface-2);
+            border-radius: var(--radius-pill);
+            padding: 6px 8px 6px 13px;
+        }
+
+        .tag-pill__remove {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .tag-input {
+            font-family: var(--font-mono);
+            padding: 9px 13px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-pill);
+            background: var(--surface);
+            color: var(--ink);
+            font-size: 13px;
+            outline: none;
+            width: 170px;
+        }
+
+        .tag-input::placeholder {
+            color: var(--faint);
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <main>
+        <form>
+            <div class="form-bar">
+                <div class="label label--accent">New recipe</div>
+                <div class="form-bar__actions">
+                    <a class="btn btn--ghost" href="my-recipes.html">Cancel</a>
+                    <button class="btn btn--primary" type="submit">Save recipe</button>
+                </div>
+            </div>
+
+            <input class="title-input" type="text" placeholder="Recipe title"/>
+
+            <div class="field">
+                <div class="field__label">Notes</div>
+                <textarea class="textarea"
+                          placeholder="Why you love it, what to serve alongside, the one tip that makes it…"></textarea>
+            </div>
+
+            <div class="field">
+                <div class="field__label">Photos</div>
+                <div class="photo-row">
+                    <div class="photo-thumb photo-placeholder">Photo 1
+                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                    <div class="photo-thumb photo-placeholder">Photo 2
+                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                    <button class="photo-add" type="button">+ Add photo</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="field__label">Details</div>
+                <div class="details-grid">
+                    <label class="stack">Serves
+                        <input class="input input--mono" type="text" value="4"/>
+                    </label>
+                    <label class="stack">Prep (min)
+                        <input class="input input--mono" type="text" placeholder="10"/>
+                    </label>
+                    <label class="stack">Cook (min)
+                        <input class="input input--mono" type="text" placeholder="25"/>
+                    </label>
+                    <label class="stack">Level
+                        <select class="select">
+                            <option>Easy</option>
+                            <option>Medium</option>
+                            <option>Hard</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="visibility">
+                    <span class="meta">Visibility</span>
+                    <button class="seg seg--on" type="button">Public</button>
+                    <button class="seg" type="button">Private</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="field__label">Ingredients</div>
+                <div class="ingredient-list">
+                    <div class="ingredient-row">
+                        <input class="input input--mono input--amount" type="text" value="400 g"/>
+                        <input class="input" type="text" value="tagliatelle"/>
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                    <div class="ingredient-row">
+                        <input class="input input--mono input--amount" type="text" value="120 g"/>
+                        <input class="input" type="text" value="unsalted butter"/>
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                    <div class="ingredient-row">
+                        <input class="input input--mono input--amount" type="text" placeholder="200 g"/>
+                        <input class="input" type="text" placeholder="Ingredient"/>
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                </div>
+                <button class="add-row" type="button">+ Add ingredient</button>
+            </div>
+
+            <div class="field">
+                <div class="field__label">Method</div>
+                <div class="step-list">
+                    <div class="step-row">
+                        <span class="step-row__n">1</span>
+                        <textarea class="textarea" placeholder="Describe this step…">Bring a large pot of well-salted water to a boil and cook the tagliatelle until just shy of al dente.</textarea>
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-row__n">2</span>
+                        <textarea class="textarea" placeholder="Describe this step…"></textarea>
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                </div>
+                <button class="add-row" type="button">+ Add step</button>
+            </div>
+
+            <div class="field">
+                <div class="field__label">Tags</div>
+                <div class="tag-field">
+                    <span class="tag-pill">Pasta<button class="tag-pill__remove" type="button"
+                                                        aria-label="Remove">×</button></span>
+                    <span class="tag-pill">Vegetarian<button class="tag-pill__remove" type="button" aria-label="Remove">×</button></span>
+                    <span class="tag-pill">Quick<button class="tag-pill__remove" type="button"
+                                                        aria-label="Remove">×</button></span>
+                    <input class="tag-input" type="text" placeholder="Add a tag + Enter"/>
+                </div>
+            </div>
+
+        </form>
+    </main>
+{% endblock %}

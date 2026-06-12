@@ -4,6 +4,10 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
         {% block stylesheets %}
         {% endblock %}
 
@@ -18,16 +22,18 @@
         {% endif %}
     </head>
     <body>
-        <nav>
-            <ul>
-                <li>
-                    <a href="{{ path('app_login') }}">Login</a>
-                </li>
-                <li>
-                    <a href="{{ path('app_register') }}">Register</a>
-                </li>
-            </ul>
-        </nav>
+        <header class="site-header">
+            <div class="site-header__inner container">
+                <button class="brand" type="button"><span class="brand__name">Mise</span><span class="brand__dot"></span></button>
+                <nav class="nav">
+                    <a class="nav__link nav__link--active" href="{{ path('app_recipe_discover') }}">Discover</a>
+                    <a class="nav__link" href="{{ path('app_recipe_index') }}">My Recipes</a>
+                    <a class="nav__link" href="#">Saved</a>
+                </nav>
+                <button class="btn btn--primary" type="button">+ New recipe</button>
+                <span class="avatar">NE</span>
+            </div>
+        </header>
         {% block body %}{% endblock %}
     </body>
 </html>

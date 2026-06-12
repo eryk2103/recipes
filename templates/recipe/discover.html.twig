@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <main>
+        <div class="page-head">
+            <div class="label label--accent" style="margin-bottom:12px;">The Table — shared kitchen</div>
+            <h1 class="h1 page-title">Discover</h1>
+            <p>Recipes shared by the cooks you follow — and a few worth following for.</p>
+        </div>
+
+        <div class="filters">
+            <label class="search">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--faint)" stroke-width="1.8"
+                     style="flex-shrink:0;">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+                </svg>
+                <input type="text" placeholder="Filter by ingredient or name — e.g. anchovy, lemon, beans"/>
+            </label>
+            <div class="chips">
+                <span class="chip">Pasta</span>
+                <span class="chip">Vegetarian</span>
+                <span class="chip">Quick</span>
+                <span class="chip">Side</span>
+                <span class="chip">Baking</span>
+                <span class="chip">Dessert</span>
+                <span class="chip">Weeknight</span>
+                <span class="chip">Soup</span>
+                <span class="chip">Bread</span>
+                <span class="chip">Sunday</span>
+                <span class="chip">Roast</span>
+            </div>
+            <div class="result-row">
+                <span class="meta">6 recipes</span>
+            </div>
+        </div>
+
+        <div class="grid-3">
+
+            <article class="card">
+                <div class="card__photo photo-placeholder">3 photos
+                    <span class="card__save" data-saved="true">★</span>
+                </div>
+                <div class="card__body">
+                    <div class="card__tags"><span class="tag">Pasta</span><span class="tag">Vegetarian</span><span
+                            class="tag">Quick</span></div>
+                    <h3 class="h2">Brown Butter &amp; Sage Tagliatelle</h3>
+                    <div class="card__author">
+                        <span class="avatar avatar--sm">NE</span>
+                        <span class="card__author-name">Nora Ellis</span>
+                        <button class="btn btn--ghost btn--sm" type="button">Edit</button>
+                    </div>
+                    <div class="card__stats">
+                        <span class="like" data-liked="true"><span>♥</span><span>48</span></span>
+                        <span class="stat">2 notes</span>
+                        <span class="spacer"></span>
+                        <span class="time">25 min</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card__photo photo-placeholder">2 photos
+                    <span class="card__save">☆</span>
+                </div>
+                <div class="card__body">
+                    <div class="card__tags"><span class="tag">Side</span><span class="tag">Quick</span></div>
+                    <h3 class="h2">Charred Cabbage, Anchovy &amp; Breadcrumb</h3>
+                    <div class="card__author">
+                        <span class="avatar avatar--sm">TM</span>
+                        <span class="card__author-name">Theo Marsh</span>
+                        <button class="btn btn--ghost btn--sm" type="button">Follow</button>
+                    </div>
+                    <div class="card__stats">
+                        <span class="like"><span>♡</span><span>31</span></span>
+                        <span class="stat">1 notes</span>
+                        <span class="spacer"></span>
+                        <span class="time">30 min</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card__photo photo-placeholder">3 photos
+                    <span class="card__save" data-saved="true">★</span>
+                </div>
+                <div class="card__body">
+                    <div class="card__tags"><span class="tag">Baking</span><span class="tag">Dessert</span></div>
+                    <h3 class="h2">Olive Oil &amp; Blood Orange Cake</h3>
+                    <div class="card__author">
+                        <span class="avatar avatar--sm">PN</span>
+                        <span class="card__author-name">Priya Nair</span>
+                        <button class="btn btn--ghost btn--sm" type="button">Follow</button>
+                    </div>
+                    <div class="card__stats">
+                        <span class="like"><span>♡</span><span>76</span></span>
+                        <span class="stat">3 notes</span>
+                        <span class="spacer"></span>
+                        <span class="time">65 min</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card__photo photo-placeholder">2 photos
+                    <span class="card__save">☆</span>
+                </div>
+                <div class="card__body">
+                    <div class="card__tags"><span class="tag">Weeknight</span><span class="tag">Vegetarian</span><span
+                            class="tag">Soup</span></div>
+                    <h3 class="h2">White Bean &amp; Rosemary Pot</h3>
+                    <div class="card__author">
+                        <span class="avatar avatar--sm">NE</span>
+                        <span class="card__author-name">Nora Ellis</span>
+                        <button class="btn btn--ghost btn--sm" type="button">Edit</button>
+                    </div>
+                    <div class="card__stats">
+                        <span class="like"><span>♡</span><span>22</span></span>
+                        <span class="stat">0 notes</span>
+                        <span class="spacer"></span>
+                        <span class="time">35 min</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card__photo photo-placeholder">3 photos
+                    <span class="card__save" data-saved="true">★</span>
+                </div>
+                <div class="card__body">
+                    <div class="card__tags"><span class="tag">Baking</span><span class="tag">Bread</span></div>
+                    <h3 class="h2">Seeded Sourdough Focaccia</h3>
+                    <div class="card__author">
+                        <span class="avatar avatar--sm">LC</span>
+                        <span class="card__author-name">Liam Cole</span>
+                        <button class="btn btn--ghost btn--sm" type="button">Follow</button>
+                    </div>
+                    <div class="card__stats">
+                        <span class="like"><span>♡</span><span>64</span></span>
+                        <span class="stat">2 notes</span>
+                        <span class="spacer"></span>
+                        <span class="time">55 min</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card__photo photo-placeholder">2 photos
+                    <span class="card__save">☆</span>
+                </div>
+                <div class="card__body">
+                    <div class="card__tags"><span class="tag">Sunday</span><span class="tag">Roast</span></div>
+                    <h3 class="h2">Schmaltz Roast Chicken &amp; Potatoes</h3>
+                    <div class="card__author">
+                        <span class="avatar avatar--sm">MB</span>
+                        <span class="card__author-name">Maya Brooks</span>
+                        <button class="btn btn--ghost btn--sm" type="button">Follow</button>
+                    </div>
+                    <div class="card__stats">
+                        <span class="like"><span>♡</span><span>53</span></span>
+                        <span class="stat">1 notes</span>
+                        <span class="spacer"></span>
+                        <span class="time">100 min</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+{% endblock %}
