@@ -40,6 +40,9 @@ class Recipe
     #[ORM\OneToMany(targetEntity: RecipeIngredient::class, mappedBy: 'recipe', orphanRemoval: true)]
     private Collection $recipeIngredients;
 
+    #[ORM\ManyToOne(inversedBy: 'recipes')]
+    private ?User $author = null;
+
     public function __construct()
     {
         $this->steps = new ArrayCollection();
@@ -155,6 +158,18 @@ class Recipe
                 $recipeIngredient->setRecipe(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }
