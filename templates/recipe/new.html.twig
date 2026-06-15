@@ -52,51 +52,6 @@
             margin-bottom: 12px;
         }
 
-        .photo-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .photo-thumb {
-            position: relative;
-            width: 120px;
-            height: 90px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .photo-thumb__remove {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 22px;
-            height: 22px;
-            border-radius: var(--radius-pill);
-            border: none;
-            background: var(--surface);
-            color: var(--muted);
-            cursor: pointer;
-            font-size: 13px;
-            line-height: 1;
-            display: grid;
-            place-items: center;
-            box-shadow: var(--shadow-float);
-        }
-
-        .photo-add {
-            width: 120px;
-            height: 90px;
-            border: 1px dashed var(--line);
-            border-radius: var(--radius-md);
-            background: none;
-            cursor: pointer;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
         .details-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -113,28 +68,6 @@
             color: var(--muted);
         }
 
-        .visibility {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .seg {
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            border: 1px solid var(--line);
-            background: transparent;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .seg--on {
-            background: var(--accent);
-            color: var(--on-accent);
-            border-color: transparent;
-        }
-
         .ingredient-list, .step-list {
             display: flex;
             flex-direction: column;
@@ -148,7 +81,12 @@
         }
 
         .ingredient-row .input--amount {
-            width: 110px;
+            width: 80px;
+            flex: none;
+        }
+
+        .ingredient-row .input--unit {
+            width: 100px;
             flex: none;
         }
 
@@ -193,162 +131,171 @@
             color: var(--muted);
             font-size: 14px;
         }
-
-        .tag-field {
-            display: flex;
-            gap: 9px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .tag-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--ink);
-            background: var(--surface-2);
-            border-radius: var(--radius-pill);
-            padding: 6px 8px 6px 13px;
-        }
-
-        .tag-pill__remove {
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1;
-        }
-
-        .tag-input {
-            font-family: var(--font-mono);
-            padding: 9px 13px;
-            border: 1px solid var(--line);
-            border-radius: var(--radius-pill);
-            background: var(--surface);
-            color: var(--ink);
-            font-size: 13px;
-            outline: none;
-            width: 170px;
-        }
-
-        .tag-input::placeholder {
-            color: var(--faint);
-        }
     </style>
 {% endblock %}
 {% block body %}
     <main>
-        <form>
+        {{ form_start(form) }}
             <div class="form-bar">
                 <div class="label label--accent">New recipe</div>
                 <div class="form-bar__actions">
-                    <a class="btn btn--ghost" href="my-recipes.html">Cancel</a>
+                    <a class="btn btn--ghost" href="{{ path('app_recipe_index') }}">Cancel</a>
                     <button class="btn btn--primary" type="submit">Save recipe</button>
                 </div>
             </div>
-
-            <input class="title-input" type="text" placeholder="Recipe title"/>
-
+            {{ form_widget(form.title) }}
             <div class="field">
                 <div class="field__label">Notes</div>
-                <textarea class="textarea"
-                          placeholder="Why you love it, what to serve alongside, the one tip that makes it…"></textarea>
+                {{ form_widget(form.notes) }}
             </div>
-
-            <div class="field">
-                <div class="field__label">Photos</div>
-                <div class="photo-row">
-                    <div class="photo-thumb photo-placeholder">Photo 1
-                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>
-                    </div>
-                    <div class="photo-thumb photo-placeholder">Photo 2
-                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>
-                    </div>
-                    <button class="photo-add" type="button">+ Add photo</button>
-                </div>
-            </div>
-
+{#            <div class="field">#}
+{#                <div class="field__label">Photos</div>#}
+{#                <div class="photo-row">#}
+{#                    <div class="photo-thumb photo-placeholder">Photo 1#}
+{#                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>#}
+{#                    </div>#}
+{#                    <div class="photo-thumb photo-placeholder">Photo 2#}
+{#                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>#}
+{#                    </div>#}
+{#                    <button class="photo-add" type="button">+ Add photo</button>#}
+{#                </div>#}
+{#            </div>#}
             <div class="field">
                 <div class="field__label">Details</div>
                 <div class="details-grid">
-                    <label class="stack">Serves
-                        <input class="input input--mono" type="text" value="4"/>
-                    </label>
-                    <label class="stack">Prep (min)
-                        <input class="input input--mono" type="text" placeholder="10"/>
+                    <label class="stack">Servings
+                        {{ form_widget(form.servings) }}
                     </label>
                     <label class="stack">Cook (min)
-                        <input class="input input--mono" type="text" placeholder="25"/>
+                        {{ form_widget(form.cookTimeMinutes) }}
                     </label>
-                    <label class="stack">Level
-                        <select class="select">
-                            <option>Easy</option>
-                            <option>Medium</option>
-                            <option>Hard</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="visibility">
-                    <span class="meta">Visibility</span>
-                    <button class="seg seg--on" type="button">Public</button>
-                    <button class="seg" type="button">Private</button>
                 </div>
             </div>
-
             <div class="field">
                 <div class="field__label">Ingredients</div>
-                <div class="ingredient-list">
-                    <div class="ingredient-row">
-                        <input class="input input--mono input--amount" type="text" value="400 g"/>
-                        <input class="input" type="text" value="tagliatelle"/>
-                        <button class="row-remove" type="button" aria-label="Remove">×</button>
-                    </div>
-                    <div class="ingredient-row">
-                        <input class="input input--mono input--amount" type="text" value="120 g"/>
-                        <input class="input" type="text" value="unsalted butter"/>
-                        <button class="row-remove" type="button" aria-label="Remove">×</button>
-                    </div>
-                    <div class="ingredient-row">
-                        <input class="input input--mono input--amount" type="text" placeholder="200 g"/>
-                        <input class="input" type="text" placeholder="Ingredient"/>
-                        <button class="row-remove" type="button" aria-label="Remove">×</button>
-                    </div>
+                <div class="ingredient-list" data-collection="ingredients" data-index="{{ form.recipeIngredients|length }}">
+                    {% for ingredient in form.recipeIngredients %}
+                        <div class="ingredient-row">
+                            {{ form_widget(ingredient.position) }}
+                            {{ form_widget(ingredient.amount) }}
+                            {{ form_widget(ingredient.unit) }}
+                            {{ form_widget(ingredient.name) }}
+                            <button class="row-remove" type="button" aria-label="Remove">×</button>
+                        </div>
+                    {% endfor %}
                 </div>
-                <button class="add-row" type="button">+ Add ingredient</button>
+                <template data-prototype="ingredients">
+                    <div class="ingredient-row">
+                        {{ form_widget(form.recipeIngredients.vars.prototype.position) }}
+                        {{ form_widget(form.recipeIngredients.vars.prototype.amount) }}
+                        {{ form_widget(form.recipeIngredients.vars.prototype.unit) }}
+                        {{ form_widget(form.recipeIngredients.vars.prototype.name) }}
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                </template>
+                <button class="add-row" type="button" data-add="ingredients">+ Add ingredient</button>
             </div>
-
             <div class="field">
                 <div class="field__label">Method</div>
-                <div class="step-list">
+                <div class="step-list" data-collection="steps" data-index="{{ form.steps|length }}">
+                    {% for step in form.steps %}
+                        <div class="step-row">
+                            <span class="step-row__n">{{ loop.index }}</span>
+                            {{ form_widget(step.position) }}
+                            {{ form_widget(step.instruction) }}
+                            <button class="row-remove" type="button" aria-label="Remove">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <template data-prototype="steps">
                     <div class="step-row">
-                        <span class="step-row__n">1</span>
-                        <textarea class="textarea" placeholder="Describe this step…">Bring a large pot of well-salted water to a boil and cook the tagliatelle until just shy of al dente.</textarea>
+                        <span class="step-row__n"></span>
+                        {{ form_widget(form.steps.vars.prototype.position) }}
+                        {{ form_widget(form.steps.vars.prototype.instruction) }}
                         <button class="row-remove" type="button" aria-label="Remove">×</button>
                     </div>
-                    <div class="step-row">
-                        <span class="step-row__n">2</span>
-                        <textarea class="textarea" placeholder="Describe this step…"></textarea>
-                        <button class="row-remove" type="button" aria-label="Remove">×</button>
-                    </div>
-                </div>
-                <button class="add-row" type="button">+ Add step</button>
+                </template>
+                <button class="add-row" type="button" data-add="steps">+ Add step</button>
             </div>
+{#            <div class="field">#}
+{#                <div class="field__label">Tags</div>#}
+{#                <div class="tag-field">#}
+{#                    <span class="tag-pill">Pasta<button class="tag-pill__remove" type="button"#}
+{#                                                        aria-label="Remove">×</button></span>#}
+{#                    <span class="tag-pill">Vegetarian<button class="tag-pill__remove" type="button" aria-label="Remove">×</button></span>#}
+{#                    <span class="tag-pill">Quick<button class="tag-pill__remove" type="button"#}
+{#                                                        aria-label="Remove">×</button></span>#}
+{#                    <input class="tag-input" type="text" placeholder="Add a tag + Enter"/>#}
+{#                </div>#}
+{#            </div>#}
 
-            <div class="field">
-                <div class="field__label">Tags</div>
-                <div class="tag-field">
-                    <span class="tag-pill">Pasta<button class="tag-pill__remove" type="button"
-                                                        aria-label="Remove">×</button></span>
-                    <span class="tag-pill">Vegetarian<button class="tag-pill__remove" type="button" aria-label="Remove">×</button></span>
-                    <span class="tag-pill">Quick<button class="tag-pill__remove" type="button"
-                                                        aria-label="Remove">×</button></span>
-                    <input class="tag-input" type="text" placeholder="Add a tag + Enter"/>
-                </div>
-            </div>
-
-        </form>
+        {{ form_end(form) }}
     </main>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function renumberSteps() {
+                document.querySelectorAll('.step-row').forEach((row, index) => {
+                    const number = row.querySelector('.step-row__n');
+                    if (number) {
+                        number.textContent = index + 1;
+                    }
+                });
+            }
+
+            function setPositions(name) {
+                const list = document.querySelector(`[data-collection="${name}"]`);
+                list.querySelectorAll(':scope > *').forEach((row, index) => {
+                    const position = row.querySelector('input[name$="[position]"]');
+                    if (position) {
+                        position.value = index;
+                    }
+                });
+            }
+
+            function bindRemove(row, onRemove) {
+                row.querySelector('.row-remove').addEventListener('click', () => {
+                    row.remove();
+                    if (onRemove) {
+                        onRemove();
+                    }
+                });
+            }
+
+            function setupCollection(name, onChange) {
+                const list = document.querySelector(`[data-collection="${name}"]`);
+                const template = document.querySelector(`template[data-prototype="${name}"]`);
+                const addButton = document.querySelector(`[data-add="${name}"]`);
+
+                list.querySelectorAll(':scope > *').forEach((row) => bindRemove(row, onChange));
+
+                addButton.addEventListener('click', () => {
+                    const index = parseInt(list.dataset.index, 10);
+                    const html = template.innerHTML.replace(/__name__/g, index);
+
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = html.trim();
+                    const row = wrapper.firstElementChild;
+
+                    list.appendChild(row);
+                    list.dataset.index = index + 1;
+                    bindRemove(row, onChange);
+
+                    if (onChange) {
+                        onChange();
+                    }
+                });
+            }
+
+            setupCollection('ingredients', () => setPositions('ingredients'));
+            setupCollection('steps', () => {
+                renumberSteps();
+                setPositions('steps');
+            });
+
+            setPositions('ingredients');
+            setPositions('steps');
+        });
+    </script>
 {% endblock %}
