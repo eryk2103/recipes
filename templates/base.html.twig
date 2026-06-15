@@ -31,7 +31,9 @@
         </button>
         <nav class="nav">
             <a class="nav__link {% if app.current_route == 'app_recipe_discover'%}nav__link--active{% endif %}" href="{{ path('app_recipe_discover') }}">Discover</a>
-            <a class="nav__link {% if app.current_route == 'app_recipe_index'%}nav__link--active{% endif %}" href="{{ path('app_recipe_index') }}">My Recipes</a>
+            {% if app.user %}
+                <a class="nav__link {% if app.current_route == 'app_recipe_index'%}nav__link--active{% endif %}" href="{{ path('app_recipe_index') }}">My Recipes</a>
+            {% endif %}
         </nav>
         {% if app.user %}
             <div class="nav-actions">
