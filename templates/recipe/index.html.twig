@@ -26,7 +26,7 @@
                             <div class="card__author">
                                 <span class="avatar avatar--sm">{{ recipe.author.username|slice(0, 2)|upper }}</span>
                                 <span class="card__author-name">You</span>
-                                <button class="btn btn--ghost btn--sm" type="button">Edit</button>
+                                <a class="btn btn--ghost btn--sm" href="{{ path('app_recipe_edit', {id: recipe.id}) }}">Edit</a>
                             </div>
                             <div class="card__stats">
                                 <span class="stat">{{ recipe.recipeIngredients|length }} ingredients</span>

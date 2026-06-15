@@ -1,0 +1,278 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <style>
+        main {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 36px 32px 96px;
+        }
+
+        .form-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .form-bar__actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .title-input {
+            width: 100%;
+            font-family: var(--font-display);
+            font-size: 40px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            border: none;
+            background: none;
+            color: var(--ink);
+            outline: none;
+            padding: 6px 0 14px;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 30px;
+        }
+
+        .title-input::placeholder {
+            color: var(--faint);
+        }
+
+        .field {
+            margin-bottom: 30px;
+        }
+
+        .field__label {
+            font-family: var(--font-mono);
+            font-size: var(--fs-label);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: var(--fs-label);
+            color: var(--muted);
+        }
+
+        .ingredient-list, .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ingredient-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ingredient-row .input--amount {
+            width: 80px;
+            flex: none;
+        }
+
+        .ingredient-row .input--unit {
+            width: 100px;
+            flex: none;
+        }
+
+        .row-remove {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            border: 1px solid var(--line);
+            background: none;
+            cursor: pointer;
+            color: var(--faint);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .step-list {
+            gap: 12px;
+        }
+
+        .step-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .step-row__n {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 500;
+            color: var(--accent);
+            min-width: 30px;
+            padding-top: 6px;
+        }
+
+        .add-row {
+            margin-top: 12px;
+            background: none;
+            border: 1px dashed var(--line);
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 14px;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <main>
+        {{ form_start(form) }}
+            <div class="form-bar">
+                <div class="label label--accent">Edit recipe</div>
+                <div class="form-bar__actions">
+                    <a class="btn btn--ghost" href="{{ path('app_recipe_index') }}">Cancel</a>
+                    <button class="btn btn--primary" type="submit">Save changes</button>
+                </div>
+            </div>
+            {{ form_widget(form.title) }}
+            <div class="field">
+                <div class="field__label">Notes</div>
+                {{ form_widget(form.notes) }}
+            </div>
+            <div class="field">
+                <div class="field__label">Details</div>
+                <div class="details-grid">
+                    <label class="stack">Servings
+                        {{ form_widget(form.servings) }}
+                    </label>
+                    <label class="stack">Cook (min)
+                        {{ form_widget(form.cookTimeMinutes) }}
+                    </label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="field__label">Ingredients</div>
+                <div class="ingredient-list" data-collection="ingredients" data-index="{{ form.recipeIngredients|length }}">
+                    {% for ingredient in form.recipeIngredients %}
+                        <div class="ingredient-row">
+                            {{ form_widget(ingredient.position) }}
+                            {{ form_widget(ingredient.amount) }}
+                            {{ form_widget(ingredient.unit) }}
+                            {{ form_widget(ingredient.name) }}
+                            <button class="row-remove" type="button" aria-label="Remove">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <template data-prototype="ingredients">
+                    <div class="ingredient-row">
+                        {{ form_widget(form.recipeIngredients.vars.prototype.position) }}
+                        {{ form_widget(form.recipeIngredients.vars.prototype.amount) }}
+                        {{ form_widget(form.recipeIngredients.vars.prototype.unit) }}
+                        {{ form_widget(form.recipeIngredients.vars.prototype.name) }}
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                </template>
+                <button class="add-row" type="button" data-add="ingredients">+ Add ingredient</button>
+            </div>
+            <div class="field">
+                <div class="field__label">Method</div>
+                <div class="step-list" data-collection="steps" data-index="{{ form.steps|length }}">
+                    {% for step in form.steps %}
+                        <div class="step-row">
+                            <span class="step-row__n">{{ loop.index }}</span>
+                            {{ form_widget(step.position) }}
+                            {{ form_widget(step.instruction) }}
+                            <button class="row-remove" type="button" aria-label="Remove">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <template data-prototype="steps">
+                    <div class="step-row">
+                        <span class="step-row__n"></span>
+                        {{ form_widget(form.steps.vars.prototype.position) }}
+                        {{ form_widget(form.steps.vars.prototype.instruction) }}
+                        <button class="row-remove" type="button" aria-label="Remove">×</button>
+                    </div>
+                </template>
+                <button class="add-row" type="button" data-add="steps">+ Add step</button>
+            </div>
+
+        {{ form_end(form) }}
+    </main>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function renumberSteps() {
+                document.querySelectorAll('.step-row').forEach((row, index) => {
+                    const number = row.querySelector('.step-row__n');
+                    if (number) {
+                        number.textContent = index + 1;
+                    }
+                });
+            }
+
+            function setPositions(name) {
+                const list = document.querySelector(`[data-collection="${name}"]`);
+                list.querySelectorAll(':scope > *').forEach((row, index) => {
+                    const position = row.querySelector('input[name$="[position]"]');
+                    if (position) {
+                        position.value = index;
+                    }
+                });
+            }
+
+            function bindRemove(row, onRemove) {
+                row.querySelector('.row-remove').addEventListener('click', () => {
+                    row.remove();
+                    if (onRemove) {
+                        onRemove();
+                    }
+                });
+            }
+
+            function setupCollection(name, onChange) {
+                const list = document.querySelector(`[data-collection="${name}"]`);
+                const template = document.querySelector(`template[data-prototype="${name}"]`);
+                const addButton = document.querySelector(`[data-add="${name}"]`);
+
+                list.querySelectorAll(':scope > *').forEach((row) => bindRemove(row, onChange));
+
+                addButton.addEventListener('click', () => {
+                    const index = parseInt(list.dataset.index, 10);
+                    const html = template.innerHTML.replace(/__name__/g, index);
+
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = html.trim();
+                    const row = wrapper.firstElementChild;
+
+                    list.appendChild(row);
+                    list.dataset.index = index + 1;
+                    bindRemove(row, onChange);
+
+                    if (onChange) {
+                        onChange();
+                    }
+                });
+            }
+
+            setupCollection('ingredients', () => setPositions('ingredients'));
+            setupCollection('steps', () => {
+                renumberSteps();
+                setPositions('steps');
+            });
+
+            setPositions('ingredients');
+            setPositions('steps');
+        });
+    </script>
+{% endblock %}

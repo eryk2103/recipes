@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Dto\CreateRecipeDto;
+use App\Dto\CreateRecipeIngredientDto;
+use App\Dto\CreateRecipeStepDto;
 use App\Entity\Ingredient;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
@@ -76,6 +78,35 @@ class RecipeService
     {
         $this->entityManager->remove($recipe);
         $this->entityManager->flush();
+    }
+
+    public function toDto(Recipe $recipe): CreateRecipeDto
+    {
+        $dto = new CreateRecipeDto();
+        $dto->title = $recipe->getTitle();
+        $dto->notes = $recipe->getNotes();
+        $dto->servings = $recipe->getServings();
+        $dto->cookTimeMinutes = $recipe->getCookTimeMinutes();
+
+        foreach ($recipe->getRecipeIngredients() as $recipeIngredient) {
+            $ingredientDto = new CreateRecipeIngredientDto();
+            $ingredientDto->amount = $recipeIngredient->getAmount();
+            $ingredientDto->unit = $recipeIngredient->getUnit();
+            $ingredientDto->name = $recipeIngredient->getIngredient()->getName();
+            $ingredientDto->position = $recipeIngredient->getPosition();
+
+            $dto->recipeIngredients[] = $ingredientDto;
+        }
+
+        foreach ($recipe->getSteps() as $step) {
+            $stepDto = new CreateRecipeStepDto();
+            $stepDto->instruction = $step->getInstruction();
+            $stepDto->position = $step->getPosition();
+
+            $dto->steps[] = $stepDto;
+        }
+
+        return $dto;
     }
 
     private function applyDto(Recipe $recipe, CreateRecipeDto $dto): void

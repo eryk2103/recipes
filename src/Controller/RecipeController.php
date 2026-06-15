@@ -50,4 +50,29 @@ class RecipeController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/recipes/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
+    public function edit(int $id, #[CurrentUser] $user, Request $request, RecipeService $recipeService): Response
+    {
+        $recipe = $recipeService->find($id);
+
+        if (!$recipe || $recipe->getAuthor() !== $user) {
+            throw $this->createNotFoundException();
+        }
+
+        $dto = $recipeService->toDto($recipe);
+
+        $form = $this->createForm(RecipeType::class, $dto);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $recipeService->update($recipe, $dto);
+
+            return $this->redirectToRoute('app_recipe_index');
+        }
+
+        return $this->render('recipe/edit.html.twig', [
+            'form' => $form,
+        ]);
+    }
 }
