@@ -3,17 +3,34 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="label label--accent">Get started</div>
+            <h1 class="h1">Create an account</h1>
 
-    {{ form_errors(registrationForm) }}
+            {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {{ form_start(registrationForm) }}
+                <div class="auth-field">
+                    {{ form_label(registrationForm.username, 'Username', {label_attr: {class: 'auth-field__label'}}) }}
+                    {{ form_widget(registrationForm.username, {attr: {class: 'input'}}) }}
+                    {{ form_errors(registrationForm.username) }}
+                </div>
+                <div class="auth-field">
+                    {{ form_label(registrationForm.plainPassword, 'Password', {label_attr: {class: 'auth-field__label'}}) }}
+                    {{ form_widget(registrationForm.plainPassword, {attr: {class: 'input'}}) }}
+                    {{ form_errors(registrationForm.plainPassword) }}
+                </div>
+                <div class="auth-checkbox">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    {{ form_label(registrationForm.agreeTerms) }}
+                </div>
+                {{ form_errors(registrationForm.agreeTerms) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                <button type="submit" class="btn btn--primary">Register</button>
+            {{ form_end(registrationForm) }}
+
+            <p class="auth-foot">Already have an account? <a href="{{ path('app_login') }}">Sign in</a></p>
+        </div>
+    </main>
 {% endblock %}

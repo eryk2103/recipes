@@ -33,10 +33,17 @@
             <a class="nav__link {% if app.current_route == 'app_recipe_discover'%}nav__link--active{% endif %}" href="{{ path('app_recipe_discover') }}">Discover</a>
             <a class="nav__link {% if app.current_route == 'app_recipe_index'%}nav__link--active{% endif %}" href="{{ path('app_recipe_index') }}">My Recipes</a>
         </nav>
-        <div class="nav-actions">
-            <a class="btn btn--primary" href="{{ path('app_recipe_new') }}">+ New recipe</a>
-            <span class="avatar">NE</span>
-        </div>
+        {% if app.user %}
+            <div class="nav-actions">
+                <a class="btn btn--primary" href="{{ path('app_recipe_new') }}">+ New recipe</a>
+                <span class="avatar">NE</span>
+            </div>
+        {% else %}
+            <div class="nav-actions">
+                <a class="nav__link" href="{{ path('app_login') }}">Log in</a>
+                <a class="nav__link" href="{{ path('app_register') }}">Register</a>
+            </div>
+        {% endif %}
     </div>
 </header>
 {% block body %}{% endblock %}
