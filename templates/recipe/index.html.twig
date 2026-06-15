@@ -26,6 +26,13 @@
                             <span class="card__visibility">{{ recipe.isPublic ? 'Public' : 'Private' }}</span>
                         </div>
                         <div class="card__body">
+                            {% if recipe.tags is not empty %}
+                                <div class="card__tags">
+                                    {% for tag in recipe.tags %}
+                                        <span class="tag">{{ tag.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                             <h3 class="h2">{{ recipe.title }}</h3>
                             <div class="card__author">
                                 <span class="avatar avatar--sm">{{ recipe.author.username|slice(0, 2)|upper }}</span>

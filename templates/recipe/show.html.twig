@@ -59,7 +59,13 @@
         </div>
 
         <div class="page-head">
-            <div class="label label--accent" style="margin-bottom:12px;">Recipe</div>
+            {% if recipe.tags is not empty %}
+                <div class="card__tags" style="margin-bottom: 12px;">
+                    {% for tag in recipe.tags %}
+                        <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <h1 class="display page-title">{{ recipe.title }}</h1>
             <div class="meta" style="display: flex; align-items: center; gap: 10px;">
                 <span class="card__author">
@@ -72,13 +78,6 @@
                     {% if recipe.cookTimeMinutes %} · {{ recipe.cookTimeMinutes }} min{% endif %}
                 </span>
             </div>
-            {% if recipe.tags is not empty %}
-                <div class="card__tags" style="margin-top: 12px;">
-                    {% for tag in recipe.tags %}
-                        <span class="tag">{{ tag.name }}</span>
-                    {% endfor %}
-                </div>
-            {% endif %}
         </div>
 
         <div class="card__photo photo-placeholder detail-photo">No photo yet</div>
