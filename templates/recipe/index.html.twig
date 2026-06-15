@@ -21,7 +21,10 @@
                 {% for recipe in recipes %}
                     <article class="card" style="position: relative;">
                         <a href="{{ path('app_recipe_show', {id: recipe.id}) }}" style="position: absolute; inset: 0; z-index: 1;" aria-label="{{ recipe.title }}"></a>
-                        <div class="card__photo photo-placeholder">No photo yet</div>
+                        <div class="card__photo photo-placeholder">
+                            No photo yet
+                            <span class="card__visibility">{{ recipe.isPublic ? 'Public' : 'Private' }}</span>
+                        </div>
                         <div class="card__body">
                             <h3 class="h2">{{ recipe.title }}</h3>
                             <div class="card__author">

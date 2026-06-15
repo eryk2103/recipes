@@ -94,6 +94,7 @@ class RecipeService
         $dto->notes = $recipe->getNotes();
         $dto->servings = $recipe->getServings();
         $dto->cookTimeMinutes = $recipe->getCookTimeMinutes();
+        $dto->isPublic = $recipe->isPublic() ?? false;
 
         foreach ($recipe->getRecipeIngredients() as $recipeIngredient) {
             $ingredientDto = new CreateRecipeIngredientDto();
@@ -126,6 +127,7 @@ class RecipeService
         $recipe->setNotes($dto->notes);
         $recipe->setServings($dto->servings);
         $recipe->setCookTimeMinutes($dto->cookTimeMinutes);
+        $recipe->setIsPublic($dto->isPublic);
 
         foreach ($dto->recipeIngredients as $recipeIngredientDto) {
             $ingredient = $this->ingredientRepository->findOneBy(['name' => $recipeIngredientDto->name])

@@ -304,6 +304,22 @@ main {
     color: var(--accent);
 }
 
+.card__visibility {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    box-shadow: var(--shadow-float);
+}
+
 .card__tags {
     display: flex;
     gap: 10px;
@@ -620,7 +636,7 @@ main {
     margin-bottom: 8px;
 }
 
-.auth-checkbox {
+.checkbox {
     display: flex;
     align-items: center;
     gap: 8px;

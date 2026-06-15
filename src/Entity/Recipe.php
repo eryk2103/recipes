@@ -51,6 +51,9 @@ class Recipe
     #[ORM\ManyToMany(targetEntity: RecipeTag::class, inversedBy: 'recipes', cascade: ['persist'])]
     private Collection $tags;
 
+    #[ORM\Column(options: ['default' => 'false'])]
+    private ?bool $isPublic = null;
+
     public function __construct()
     {
         $this->steps = new ArrayCollection();
@@ -203,6 +206,18 @@ class Recipe
     public function removeTag(RecipeTag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function isPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(bool $isPublic): static
+    {
+        $this->isPublic = $isPublic;
 
         return $this;
     }

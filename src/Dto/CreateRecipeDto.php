@@ -12,6 +12,8 @@ class CreateRecipeDto
 
     public ?int $cookTimeMinutes = null;
 
+    public bool $isPublic = false;
+
     /**
      * @var CreateRecipeIngredientDto[]
      */
