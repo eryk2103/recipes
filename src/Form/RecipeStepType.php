@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\RecipeStep;
+use App\Dto\CreateRecipeStepDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -24,7 +24,7 @@ class RecipeStepType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => RecipeStep::class,
+            'data_class' => CreateRecipeStepDto::class,
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\RecipeIngredient;
+use App\Dto\CreateRecipeIngredientDto;
 use App\Enum\Unit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
@@ -27,7 +27,6 @@ class RecipeIngredientType extends AbstractType
                 'attr' => ['class' => 'input input--mono input--unit'],
             ])
             ->add('name', TextType::class, [
-                'mapped' => false,
                 'attr' => ['class' => 'input', 'placeholder' => 'Ingredient'],
             ])
         ;
@@ -36,7 +35,7 @@ class RecipeIngredientType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => RecipeIngredient::class,
+            'data_class' => CreateRecipeIngredientDto::class,
         ]);
     }
 }

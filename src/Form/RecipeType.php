@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Recipe;
+use App\Dto\CreateRecipeDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -52,7 +52,7 @@ class RecipeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Recipe::class,
+            'data_class' => CreateRecipeDto::class,
         ]);
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\Ingredient;
-use App\Entity\Recipe;
-use App\Entity\RecipeIngredient;
-use App\Entity\RecipeStep;
+use App\Dto\CreateRecipeDto;
+use App\Dto\CreateRecipeIngredientDto;
+use App\Dto\CreateRecipeStepDto;
 use App\Form\RecipeType;
-use App\Repository\IngredientRepository;
+use App\Service\RecipeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class RecipeController extends AbstractController
 {
@@ -28,24 +28,19 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, IngredientRepository $ingredientRepository): Response
+    public function new(#[CurrentUser] $user, Request $request, RecipeService $recipeService): Response
     {
-        $recipe = new Recipe();
-        $recipe->addRecipeIngredient(new RecipeIngredient());
-        $recipe->addStep(new RecipeStep());
+        $dto = new CreateRecipeDto();
+        $dto->recipeIngredients[] = new CreateRecipeIngredientDto();
+        $dto->steps[] = new CreateRecipeStepDto();
 
-        $form = $this->createForm(RecipeType::class, $recipe);
+        $form = $this->createForm(RecipeType::class, $dto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($form->get('recipeIngredients') as $recipeIngredientForm) {
-                $name = $recipeIngredientForm->get('name')->getData();
-                $ingredient = $ingredientRepository->findOneBy(['name' => $name])
-                    ?? new Ingredient()->setName($name);
+            $recipeService->create($dto, $user);
 
-                $recipeIngredientForm->getData()->setIngredient($ingredient);
-            }
-
+            return $this->redirectToRoute('app_recipe_index');
         }
 
         return $this->render('recipe/new.html.twig', [
