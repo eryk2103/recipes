@@ -46,6 +46,18 @@ class RecipeType extends AbstractType
                 'by_reference' => false,
                 'label' => false,
             ])
+            ->add('tags', CollectionType::class, [
+                'entry_type' => TextType::class,
+                'entry_options' => [
+                    'required' => false,
+                    'label' => false,
+                    'attr' => ['class' => 'tag-input', 'placeholder' => 'Tag'],
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+            ])
         ;
     }
 

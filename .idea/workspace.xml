@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="91f5b10d-e87b-4667-9082-64cbc58036c0" name="Changes" comment="" />
+    <list default="true" id="91f5b10d-e87b-4667-9082-64cbc58036c0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Dto/CreateRecipeDto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Dto/CreateRecipeDto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Recipe.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Recipe.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/RecipeType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/RecipeType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/RecipeService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/RecipeService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/edit.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/new.html.twig" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -141,7 +149,7 @@
       <workItem from="1781272157856" duration="1015000" />
       <workItem from="1781273181380" duration="5798000" />
       <workItem from="1781289415512" duration="8946000" />
-      <workItem from="1781514407737" duration="4432000" />
+      <workItem from="1781514407737" duration="6900000" />
     </task>
     <servers />
   </component>

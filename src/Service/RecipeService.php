@@ -9,9 +9,11 @@ use App\Entity\Ingredient;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
 use App\Entity\RecipeStep;
+use App\Entity\RecipeTag;
 use App\Entity\User;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
+use App\Repository\RecipeTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RecipeService
@@ -20,6 +22,7 @@ class RecipeService
         private EntityManagerInterface $entityManager,
         private RecipeRepository $recipeRepository,
         private IngredientRepository $ingredientRepository,
+        private RecipeTagRepository $recipeTagRepository,
     ) {
     }
 
@@ -67,6 +70,10 @@ class RecipeService
             $recipe->removeStep($step);
         }
 
+        foreach ($recipe->getTags()->toArray() as $tag) {
+            $recipe->removeTag($tag);
+        }
+
         $this->applyDto($recipe, $dto);
 
         $this->entityManager->flush();
@@ -106,6 +113,10 @@ class RecipeService
             $dto->steps[] = $stepDto;
         }
 
+        foreach ($recipe->getTags() as $tag) {
+            $dto->tags[] = $tag->getName();
+        }
+
         return $dto;
     }
 
@@ -135,6 +146,19 @@ class RecipeService
             $step->setPosition($stepDto->position);
 
             $recipe->addStep($step);
+        }
+
+        foreach ($dto->tags as $tagName) {
+            $tagName = trim($tagName ?? '');
+
+            if ($tagName === '') {
+                continue;
+            }
+
+            $tag = $this->recipeTagRepository->findOneBy(['name' => $tagName])
+                ?? new RecipeTag()->setName($tagName);
+
+            $recipe->addTag($tag);
         }
     }
 }

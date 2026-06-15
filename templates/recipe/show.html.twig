@@ -72,6 +72,13 @@
                     {% if recipe.cookTimeMinutes %} · {{ recipe.cookTimeMinutes }} min{% endif %}
                 </span>
             </div>
+            {% if recipe.tags is not empty %}
+                <div class="card__tags" style="margin-top: 12px;">
+                    {% for tag in recipe.tags %}
+                        <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
         <div class="card__photo photo-placeholder detail-photo">No photo yet</div>

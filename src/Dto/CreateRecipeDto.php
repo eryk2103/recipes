@@ -21,4 +21,9 @@ class CreateRecipeDto
      * @var CreateRecipeStepDto[]
      */
     public array $steps = [];
+
+    /**
+     * @var string[]
+     */
+    public array $tags = [];
 }

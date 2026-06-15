@@ -131,6 +131,44 @@
             color: var(--muted);
             font-size: 14px;
         }
+
+        .tag-field {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-pill {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-pill);
+            padding: 4px 6px 4px 14px;
+        }
+
+        .tag-input {
+            border: none;
+            background: none;
+            outline: none;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.03em;
+            color: var(--ink);
+            width: 90px;
+        }
+
+        .tag-pill__remove {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--faint);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
     </style>
 {% endblock %}
 {% block body %}
@@ -217,17 +255,24 @@
                 </template>
                 <button class="add-row" type="button" data-add="steps">+ Add step</button>
             </div>
-{#            <div class="field">#}
-{#                <div class="field__label">Tags</div>#}
-{#                <div class="tag-field">#}
-{#                    <span class="tag-pill">Pasta<button class="tag-pill__remove" type="button"#}
-{#                                                        aria-label="Remove">×</button></span>#}
-{#                    <span class="tag-pill">Vegetarian<button class="tag-pill__remove" type="button" aria-label="Remove">×</button></span>#}
-{#                    <span class="tag-pill">Quick<button class="tag-pill__remove" type="button"#}
-{#                                                        aria-label="Remove">×</button></span>#}
-{#                    <input class="tag-input" type="text" placeholder="Add a tag + Enter"/>#}
-{#                </div>#}
-{#            </div>#}
+            <div class="field">
+                <div class="field__label">Tags</div>
+                <div class="tag-field" data-collection="tags" data-index="{{ form.tags|length }}">
+                    {% for tag in form.tags %}
+                        <span class="tag-pill">
+                            {{ form_widget(tag) }}
+                            <button class="tag-pill__remove row-remove" type="button" aria-label="Remove">×</button>
+                        </span>
+                    {% endfor %}
+                </div>
+                <template data-prototype="tags">
+                    <span class="tag-pill">
+                        {{ form_widget(form.tags.vars.prototype) }}
+                        <button class="tag-pill__remove row-remove" type="button" aria-label="Remove">×</button>
+                    </span>
+                </template>
+                <button class="add-row" type="button" data-add="tags">+ Add tag</button>
+            </div>
 
         {{ form_end(form) }}
     </main>
@@ -293,6 +338,7 @@
                 renumberSteps();
                 setPositions('steps');
             });
+            setupCollection('tags');
 
             setPositions('ingredients');
             setPositions('steps');

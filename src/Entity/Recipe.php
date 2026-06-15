@@ -45,10 +45,17 @@ class Recipe
     #[ORM\ManyToOne(inversedBy: 'recipes')]
     private ?User $author = null;
 
+    /**
+     * @var Collection<int, RecipeTag>
+     */
+    #[ORM\ManyToMany(targetEntity: RecipeTag::class, inversedBy: 'recipes', cascade: ['persist'])]
+    private Collection $tags;
+
     public function __construct()
     {
         $this->steps = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -172,6 +179,30 @@ class Recipe
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RecipeTag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(RecipeTag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(RecipeTag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }
