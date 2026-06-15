@@ -31,13 +31,13 @@ class Recipe
     /**
      * @var Collection<int, RecipeStep>
      */
-    #[ORM\OneToMany(targetEntity: RecipeStep::class, mappedBy: 'recipe', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: RecipeStep::class, mappedBy: 'recipe', cascade: ['persist'], orphanRemoval: true)]
     private Collection $steps;
 
     /**
      * @var Collection<int, RecipeIngredient>
      */
-    #[ORM\OneToMany(targetEntity: RecipeIngredient::class, mappedBy: 'recipe', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: RecipeIngredient::class, mappedBy: 'recipe', cascade: ['persist'], orphanRemoval: true)]
     private Collection $recipeIngredients;
 
     #[ORM\ManyToOne(inversedBy: 'recipes')]

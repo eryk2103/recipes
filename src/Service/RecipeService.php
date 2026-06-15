@@ -29,6 +29,14 @@ class RecipeService
     /**
      * @return Recipe[]
      */
+    public function getByAuthor(User $user): array
+    {
+        return $this->recipeRepository->findBy(['author' => $user]);
+    }
+
+    /**
+     * @return Recipe[]
+     */
     public function findAll(): array
     {
         return $this->recipeRepository->findAll();

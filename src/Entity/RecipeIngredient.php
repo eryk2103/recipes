@@ -18,7 +18,7 @@ class RecipeIngredient
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
 
-    #[ORM\ManyToOne(inversedBy: 'recipeIngredients')]
+    #[ORM\ManyToOne(inversedBy: 'recipeIngredients', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ingredient $ingredient = null;
 

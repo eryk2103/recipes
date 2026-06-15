@@ -22,9 +22,12 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes', name: 'app_recipe_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(#[CurrentUser] $user, RecipeService $recipeService): Response
     {
-        return $this->render('recipe/index.html.twig', []);
+        $recipes = $recipeService->getByAuthor($user);
+        return $this->render('recipe/index.html.twig', [
+            'recipes' => $recipes,
+        ]);
     }
 
     #[Route('/recipes/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
