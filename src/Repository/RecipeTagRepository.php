@@ -16,28 +16,16 @@ class RecipeTagRepository extends ServiceEntityRepository
         parent::__construct($registry, RecipeTag::class);
     }
 
-    //    /**
-    //     * @return RecipeTag[] Returns an array of RecipeTag objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?RecipeTag
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return RecipeTag[]
+     */
+    public function search(string $query): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('LOWER(t.name) LIKE :q')
+            ->setParameter('q', '%' . strtolower($query) . '%')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
