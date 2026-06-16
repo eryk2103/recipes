@@ -38,7 +38,14 @@
         {% if app.user %}
             <div class="nav-actions">
                 <a class="btn btn--primary" href="{{ path('app_recipe_new') }}">+ New recipe</a>
-                <span class="avatar">NE</span>
+                <div class="avatar-menu">
+                    <span class="avatar">{{ app.user.username|slice(0, 2)|upper }}</span>
+                    <div class="avatar-dropdown">
+                        <div class="avatar-dropdown__inner">
+                            <a class="avatar-dropdown__item" href="{{ path('app_logout') }}">Log out</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         {% else %}
             <div class="nav-actions">
