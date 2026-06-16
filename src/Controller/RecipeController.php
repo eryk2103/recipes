@@ -22,11 +22,26 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes', name: 'app_recipe_index', methods: ['GET'])]
-    public function index(#[CurrentUser] $user, RecipeService $recipeService): Response
+    public function index(#[CurrentUser] $user, Request $request, RecipeService $recipeService): Response
     {
-        $recipes = $recipeService->getByAuthor($user);
+        $filter = $request->query->getString('filter', 'all');
+        $allRecipes = $recipeService->getByAuthor($user);
+
+        $publicCount = count(array_filter($allRecipes, fn($r) => $r->isPublic()));
+        $privateCount = count($allRecipes) - $publicCount;
+
+        $recipes = match ($filter) {
+            'public' => array_values(array_filter($allRecipes, fn($r) => $r->isPublic())),
+            'private' => array_values(array_filter($allRecipes, fn($r) => !$r->isPublic())),
+            default => $allRecipes,
+        };
+
         return $this->render('recipe/index.html.twig', [
             'recipes' => $recipes,
+            'filter' => $filter,
+            'totalCount' => count($allRecipes),
+            'publicCount' => $publicCount,
+            'privateCount' => $privateCount,
         ]);
     }
 

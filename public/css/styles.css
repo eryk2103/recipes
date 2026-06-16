@@ -467,6 +467,7 @@ main {
     color: var(--muted);
     cursor: pointer;
     white-space: nowrap;
+    text-decoration: none;
 }
 
 .chip--active {

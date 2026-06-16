@@ -13,9 +13,11 @@
         {% if recipes is empty %}
             <p class="meta">You haven't added any recipes yet.</p>
         {% else %}
-            <div class="subnav">
-                <span class="chip chip--active">All · {{ recipes|length }}</span>
-            </div>
+            <nav class="subnav">
+                <a href="{{ path('app_recipe_index') }}" class="chip {{ filter == 'all' ? 'chip--active' : '' }}">All · {{ totalCount }}</a>
+                <a href="{{ path('app_recipe_index', {filter: 'public'}) }}" class="chip {{ filter == 'public' ? 'chip--active' : '' }}">Public · {{ publicCount }}</a>
+                <a href="{{ path('app_recipe_index', {filter: 'private'}) }}" class="chip {{ filter == 'private' ? 'chip--active' : '' }}">Private · {{ privateCount }}</a>
+            </nav>
 
             <div class="grid-3">
                 {% for recipe in recipes %}
