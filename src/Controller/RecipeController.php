@@ -6,6 +6,7 @@ use App\Dto\CreateRecipeDto;
 use App\Dto\CreateRecipeIngredientDto;
 use App\Dto\CreateRecipeStepDto;
 use App\Form\RecipeType;
+use App\Repository\RecipeRepository;
 use App\Service\RecipeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,9 +17,11 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'app_recipe_discover', methods: ['GET'])]
-    public function discover(): Response
+    public function discover(RecipeRepository $recipeRepository): Response
     {
-        return $this->render('recipe/discover.html.twig', []);
+        return $this->render('recipe/discover.html.twig', [
+            'recipes' => $recipeRepository->findAllPublic(),
+        ]);
     }
 
     #[Route('/recipes', name: 'app_recipe_index', methods: ['GET'])]
@@ -53,16 +56,18 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes/{id}', name: 'app_recipe_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(int $id, #[CurrentUser] $user, RecipeService $recipeService): Response
+    public function show(int $id, RecipeService $recipeService): Response
     {
         $recipe = $recipeService->find($id);
+        $user = $this->getUser();
 
-        if (!$recipe || $recipe->getAuthor() !== $user) {
+        if (!$recipe || (!$recipe->isPublic() && $recipe->getAuthor() !== $user)) {
             throw $this->createNotFoundException();
         }
 
         return $this->render('recipe/show.html.twig', [
             'recipe' => $recipe,
+            'isOwner' => $recipe->getAuthor() === $user,
         ]);
     }
 

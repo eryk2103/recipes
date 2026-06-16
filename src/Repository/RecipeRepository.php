@@ -30,4 +30,30 @@ class RecipeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Recipe[]
+     */
+    public function findAllPublic(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = true')
+            ->orderBy('r.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Recipe[]
+     */
+    public function searchPublic(string $query): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = true')
+            ->andWhere('LOWER(r.title) LIKE :q')
+            ->setParameter('q', '%' . strtolower($query) . '%')
+            ->orderBy('r.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

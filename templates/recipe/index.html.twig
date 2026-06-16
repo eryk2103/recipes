@@ -32,6 +32,8 @@
                 <button class="chip" data-visibility="private">Private</button>
             </nav>
 
+            <p class="meta" id="no-results" hidden>No recipes found.</p>
+
             <div class="grid-3">
                 {% for recipe in recipes %}
                     {% set tagNames = [] %}
@@ -207,6 +209,7 @@
             const tagFilters = activeFilters.filter(f => f.type === 'tag').map(f => f.value.toLowerCase());
             const ingFilters = activeFilters.filter(f => f.type === 'ingredient').map(f => f.value.toLowerCase());
 
+            let anyVisible = false;
             cards.forEach(card => {
                 const isPublic = card.dataset.public === 'true';
                 const visibilityMatch = visibilityFilter === 'all'
@@ -221,7 +224,10 @@
                     && ingFilters.every(i => cardIngs.includes(i));
 
                 card.style.display = visible ? '' : 'none';
+                if (visible) anyVisible = true;
             });
+
+            document.getElementById('no-results').hidden = anyVisible;
         }
 
         function esc(str) {

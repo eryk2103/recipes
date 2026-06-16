@@ -27,4 +27,19 @@ class RecipeController extends AbstractController
             'isPublic' => $r->isPublic(),
         ], $recipes));
     }
+
+    #[Route('/public', name: 'public', methods: ['GET'])]
+    public function public(Request $request, RecipeRepository $recipeRepository): JsonResponse
+    {
+        $search = $request->query->getString('search');
+
+        $recipes = $search
+            ? $recipeRepository->searchPublic($search)
+            : $recipeRepository->findAllPublic();
+
+        return $this->json(array_map(fn($r) => [
+            'id' => $r->getId(),
+            'title' => $r->getTitle(),
+        ], $recipes));
+    }
 }

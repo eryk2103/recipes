@@ -54,8 +54,12 @@
 {% block body %}
     <main>
         <div class="detail-bar">
-            <a class="nav__link" href="{{ path('app_recipe_index') }}">← My Recipes</a>
-            <a class="btn btn--primary" href="{{ path('app_recipe_edit', {id: recipe.id}) }}">Edit recipe</a>
+            {% if isOwner %}
+                <a class="nav__link" href="{{ path('app_recipe_index') }}">← My Recipes</a>
+                <a class="btn btn--primary" href="{{ path('app_recipe_edit', {id: recipe.id}) }}">Edit recipe</a>
+            {% else %}
+                <a class="nav__link" href="{{ path('app_recipe_discover') }}">← Discover</a>
+            {% endif %}
         </div>
 
         <div class="page-head">
