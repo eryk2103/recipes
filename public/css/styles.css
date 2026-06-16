@@ -323,7 +323,9 @@ main {
 .card__tags {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: hidden;
+    align-items: start;
 }
 
 .card__author {
@@ -487,6 +489,7 @@ main {
     border: 1px solid var(--line);
     padding: 5px 12px;
     border-radius: var(--radius-pill);
+    text-wrap: nowrap;
 }
 
 /* CARD */
