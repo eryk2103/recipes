@@ -28,4 +28,6 @@ class CreateRecipeDto
      * @var string[]
      */
     public array $tags = [];
+
+    public ?string $photo = null;
 }

@@ -54,6 +54,9 @@ class Recipe
     #[ORM\Column(options: ['default' => 'false'])]
     private ?bool $isPublic = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     public function __construct()
     {
         $this->steps = new ArrayCollection();
@@ -218,6 +221,18 @@ class Recipe
     public function setIsPublic(bool $isPublic): static
     {
         $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }

@@ -186,18 +186,10 @@
                 <div class="field__label">Notes</div>
                 {{ form_widget(form.notes) }}
             </div>
-{#            <div class="field">#}
-{#                <div class="field__label">Photos</div>#}
-{#                <div class="photo-row">#}
-{#                    <div class="photo-thumb photo-placeholder">Photo 1#}
-{#                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>#}
-{#                    </div>#}
-{#                    <div class="photo-thumb photo-placeholder">Photo 2#}
-{#                        <button class="photo-thumb__remove" type="button" aria-label="Remove">×</button>#}
-{#                    </div>#}
-{#                    <button class="photo-add" type="button">+ Add photo</button>#}
-{#                </div>#}
-{#            </div>#}
+            <div class="field">
+                <div class="field__label">Photo</div>
+                {{ form_widget(form.photo) }}
+            </div>
             <div class="field">
                 <div class="field__label">Details</div>
                 <div class="details-grid">

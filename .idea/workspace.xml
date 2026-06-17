@@ -2,8 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91f5b10d-e87b-4667-9082-64cbc58036c0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RecipeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RecipeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Dto/CreateRecipeDto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Dto/CreateRecipeDto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Recipe.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Recipe.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/RecipeType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/RecipeType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/RecipeService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/RecipeService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/discover.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/discover.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/edit.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/new.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,6 +114,8 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-icu" />
       <path value="$PROJECT_DIR$/vendor/symfony/twig-bridge" />
       <path value="$PROJECT_DIR$/vendor/symfony/asset" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mime" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
     </include_path>
   </component>
   <component name="ProjectColorInfo">{
@@ -145,7 +160,8 @@
       <workItem from="1781273181380" duration="5798000" />
       <workItem from="1781289415512" duration="8946000" />
       <workItem from="1781514407737" duration="9085000" />
-      <workItem from="1781602217529" duration="4269000" />
+      <workItem from="1781602217529" duration="4989000" />
+      <workItem from="1781688089639" duration="3016000" />
     </task>
     <servers />
   </component>

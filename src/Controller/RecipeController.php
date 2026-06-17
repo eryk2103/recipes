@@ -7,6 +7,7 @@ use App\Dto\CreateRecipeIngredientDto;
 use App\Dto\CreateRecipeStepDto;
 use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
+use App\Service\FileUploadService;
 use App\Service\RecipeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
-    public function new(#[CurrentUser] $user, Request $request, RecipeService $recipeService): Response
+    public function new(#[CurrentUser] $user, Request $request, RecipeService $recipeService, FileUploadService $fileUploadService): Response
     {
         $dto = new CreateRecipeDto();
         $dto->recipeIngredients[] = new CreateRecipeIngredientDto();
@@ -45,6 +46,12 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('photo')->getData();
+            if ($file) {
+                $newFileName = $fileUploadService->upload($file);
+                $dto->photo = $newFileName;
+            }
+
             $recipeService->create($dto, $user);
 
             return $this->redirectToRoute('app_recipe_index');
@@ -72,7 +79,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    public function edit(int $id, #[CurrentUser] $user, Request $request, RecipeService $recipeService): Response
+    public function edit(int $id, #[CurrentUser] $user, Request $request, RecipeService $recipeService, FileUploadService $fileUploadService): Response
     {
         $recipe = $recipeService->find($id);
 
@@ -86,6 +93,12 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('photo')->getData();
+            if ($file) {
+                $newFileName = $fileUploadService->upload($file);
+                $dto->photo = $newFileName;
+            }
+
             $recipeService->update($recipe, $dto);
 
             return $this->redirectToRoute('app_recipe_index');
@@ -93,6 +106,7 @@ class RecipeController extends AbstractController
 
         return $this->render('recipe/edit.html.twig', [
             'form' => $form,
+            'recipe' => $recipe,
         ]);
     }
 }

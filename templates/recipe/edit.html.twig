@@ -174,97 +174,104 @@
 {% block body %}
     <main>
         {{ form_start(form) }}
-            <div class="form-bar">
-                <div class="label label--accent">Edit recipe</div>
-                <div class="form-bar__actions">
-                    <a class="btn btn--ghost" href="{{ path('app_recipe_index') }}">Cancel</a>
-                    <button class="btn btn--primary" type="submit">Save changes</button>
-                </div>
+        <div class="form-bar">
+            <div class="label label--accent">Edit recipe</div>
+            <div class="form-bar__actions">
+                <a class="btn btn--ghost" href="{{ path('app_recipe_index') }}">Cancel</a>
+                <button class="btn btn--primary" type="submit">Save changes</button>
             </div>
-            {{ form_widget(form.title) }}
-            <div class="field">
-                <div class="field__label">Notes</div>
-                {{ form_widget(form.notes) }}
+        </div>
+        {{ form_widget(form.title) }}
+        <div class="field">
+            <div class="field__label">Notes</div>
+            {{ form_widget(form.notes) }}
+        </div>
+        <div class="field">
+            <div class="field__label">Photo</div>
+            {% if recipe.photo %}
+                <img class="form-photo" src="{{ asset('uploads/recipe_photos/' ~ recipe.photo) }}" alt="recipe photo"/>
+            {% endif %}
+            {{ form_widget(form.photo) }}
+        </div>
+        <div class="field">
+            <div class="field__label">Details</div>
+            <div class="details-grid">
+                <label class="stack">Servings
+                    {{ form_widget(form.servings) }}
+                </label>
+                <label class="stack">Cook (min)
+                    {{ form_widget(form.cookTimeMinutes) }}
+                </label>
             </div>
-            <div class="field">
-                <div class="field__label">Details</div>
-                <div class="details-grid">
-                    <label class="stack">Servings
-                        {{ form_widget(form.servings) }}
-                    </label>
-                    <label class="stack">Cook (min)
-                        {{ form_widget(form.cookTimeMinutes) }}
-                    </label>
-                </div>
-                <div class="checkbox">
-                    {{ form_widget(form.isPublic) }}
-                    {{ form_label(form.isPublic) }}
-                </div>
+            <div class="checkbox">
+                {{ form_widget(form.isPublic) }}
+                {{ form_label(form.isPublic) }}
             </div>
-            <div class="field">
-                <div class="field__label">Ingredients</div>
-                <div class="ingredient-list" data-collection="ingredients" data-index="{{ form.recipeIngredients|length }}">
-                    {% for ingredient in form.recipeIngredients %}
-                        <div class="ingredient-row">
-                            {{ form_widget(ingredient.position) }}
-                            {{ form_widget(ingredient.amount) }}
-                            {{ form_widget(ingredient.unit) }}
-                            {{ form_widget(ingredient.name) }}
-                            <button class="row-remove" type="button" aria-label="Remove">×</button>
-                        </div>
-                    {% endfor %}
-                </div>
-                <template data-prototype="ingredients">
+        </div>
+        <div class="field">
+            <div class="field__label">Ingredients</div>
+            <div class="ingredient-list" data-collection="ingredients" data-index="{{ form.recipeIngredients|length }}">
+                {% for ingredient in form.recipeIngredients %}
                     <div class="ingredient-row">
-                        {{ form_widget(form.recipeIngredients.vars.prototype.position) }}
-                        {{ form_widget(form.recipeIngredients.vars.prototype.amount) }}
-                        {{ form_widget(form.recipeIngredients.vars.prototype.unit) }}
-                        {{ form_widget(form.recipeIngredients.vars.prototype.name) }}
+                        {{ form_widget(ingredient.position) }}
+                        {{ form_widget(ingredient.amount) }}
+                        {{ form_widget(ingredient.unit) }}
+                        {{ form_widget(ingredient.name) }}
                         <button class="row-remove" type="button" aria-label="Remove">×</button>
                     </div>
-                </template>
-                <button class="add-row" type="button" data-add="ingredients">+ Add ingredient</button>
+                {% endfor %}
             </div>
-            <div class="field">
-                <div class="field__label">Method</div>
-                <div class="step-list" data-collection="steps" data-index="{{ form.steps|length }}">
-                    {% for step in form.steps %}
-                        <div class="step-row">
-                            <span class="step-row__n">{{ loop.index }}</span>
-                            {{ form_widget(step.position) }}
-                            {{ form_widget(step.instruction) }}
-                            <button class="row-remove" type="button" aria-label="Remove">×</button>
-                        </div>
-                    {% endfor %}
+            <template data-prototype="ingredients">
+                <div class="ingredient-row">
+                    {{ form_widget(form.recipeIngredients.vars.prototype.position) }}
+                    {{ form_widget(form.recipeIngredients.vars.prototype.amount) }}
+                    {{ form_widget(form.recipeIngredients.vars.prototype.unit) }}
+                    {{ form_widget(form.recipeIngredients.vars.prototype.name) }}
+                    <button class="row-remove" type="button" aria-label="Remove">×</button>
                 </div>
-                <template data-prototype="steps">
+            </template>
+            <button class="add-row" type="button" data-add="ingredients">+ Add ingredient</button>
+        </div>
+        <div class="field">
+            <div class="field__label">Method</div>
+            <div class="step-list" data-collection="steps" data-index="{{ form.steps|length }}">
+                {% for step in form.steps %}
                     <div class="step-row">
-                        <span class="step-row__n"></span>
-                        {{ form_widget(form.steps.vars.prototype.position) }}
-                        {{ form_widget(form.steps.vars.prototype.instruction) }}
+                        <span class="step-row__n">{{ loop.index }}</span>
+                        {{ form_widget(step.position) }}
+                        {{ form_widget(step.instruction) }}
                         <button class="row-remove" type="button" aria-label="Remove">×</button>
                     </div>
-                </template>
-                <button class="add-row" type="button" data-add="steps">+ Add step</button>
+                {% endfor %}
             </div>
-            <div class="field">
-                <div class="field__label">Tags</div>
-                <div class="tag-field" data-collection="tags" data-index="{{ form.tags|length }}">
-                    {% for tag in form.tags %}
-                        <span class="tag-pill">
+            <template data-prototype="steps">
+                <div class="step-row">
+                    <span class="step-row__n"></span>
+                    {{ form_widget(form.steps.vars.prototype.position) }}
+                    {{ form_widget(form.steps.vars.prototype.instruction) }}
+                    <button class="row-remove" type="button" aria-label="Remove">×</button>
+                </div>
+            </template>
+            <button class="add-row" type="button" data-add="steps">+ Add step</button>
+        </div>
+        <div class="field">
+            <div class="field__label">Tags</div>
+            <div class="tag-field" data-collection="tags" data-index="{{ form.tags|length }}">
+                {% for tag in form.tags %}
+                    <span class="tag-pill">
                             {{ form_widget(tag) }}
                             <button class="tag-pill__remove row-remove" type="button" aria-label="Remove">×</button>
                         </span>
-                    {% endfor %}
-                </div>
-                <template data-prototype="tags">
+                {% endfor %}
+            </div>
+            <template data-prototype="tags">
                     <span class="tag-pill">
                         {{ form_widget(form.tags.vars.prototype) }}
                         <button class="tag-pill__remove row-remove" type="button" aria-label="Remove">×</button>
                     </span>
-                </template>
-                <button class="add-row" type="button" data-add="tags">+ Add tag</button>
-            </div>
+            </template>
+            <button class="add-row" type="button" data-add="tags">+ Add tag</button>
+        </div>
 
         {{ form_end(form) }}
     </main>

@@ -84,7 +84,16 @@
             </div>
         </div>
 
-        <div class="card__photo photo-placeholder detail-photo">No photo yet</div>
+        {% if recipe.photo %}
+            <div class="card__photo detail-photo">
+                <img class="" src="{{ asset('uploads/recipe_photos/' ~ recipe.photo) }}"
+                     alt="recipe photo"/>
+            </div>
+        {% else %}
+            <div class="card__photo photo-placeholder detail-photo">
+                No photo yet
+            </div>
+        {% endif %}
 
         <div class="recipe-layout">
             <aside>
