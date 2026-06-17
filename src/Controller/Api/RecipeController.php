@@ -2,8 +2,10 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Notification;
 use App\Repository\RecipeRepository;
 use App\Service\RecipeService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,21 +47,23 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/{id}/save', name: 'save', methods: ['GET'])]
-    public function save(int $id, RecipeService $recipeService, #[CurrentUser] $user): JsonResponse
+    public function save(int $id, RecipeService $recipeService, EntityManagerInterface $em, #[CurrentUser] $user): JsonResponse
     {
         $recipe = $recipeService->find($id);
-        if($recipe === null)
-        {
+        if ($recipe === null) {
             throw $this->createNotFoundException();
         }
 
-        try{
+        try {
             $recipeService->save($user, $recipe);
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return $this->json(null, 400);
         }
+
+        $notification = new Notification();
+        $notification->setRecipient($recipe->getAuthor())->setActor($user)->setRecipe($recipe)->setType(Notification::TYPE_SAVE);
+        $em->persist($notification);
+        $em->flush();
 
         return $this->json(null, 204);
     }

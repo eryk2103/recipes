@@ -36,8 +36,46 @@
             {% endif %}
         </nav>
         {% if app.user %}
+            {% set _notifications = notifications() %}
+            {% set _unread = unread_notification_count() %}
             <div class="nav-actions">
                 <a class="btn btn--primary" href="{{ path('app_recipe_new') }}">+ New recipe</a>
+
+                <div class="bell-menu" id="bell-menu">
+                    <button class="bell-btn" id="bell-btn" aria-label="Notifications" type="button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                        {% if _unread > 0 %}
+                            <span class="bell-badge">{{ _unread > 9 ? '9+' : _unread }}</span>
+                        {% endif %}
+                    </button>
+                    <div class="bell-dropdown" id="bell-dropdown">
+                        <div class="bell-dropdown__header">Notifications</div>
+                        <div class="bell-dropdown__list">
+                            {% if _notifications is empty %}
+                                <div class="bell-dropdown__empty">No notifications yet.</div>
+                            {% else %}
+                                {% for n in _notifications %}
+                                    <a class="bell-item {% if not n.isRead %}bell-item--unread{% endif %}"
+                                       href="{{ path('app_notification_read', {id: n.id}) }}">
+                                        <span class="avatar avatar--sm">{{ n.actor.username|slice(0, 2)|upper }}</span>
+                                        <div class="bell-item__body">
+                                            <span class="bell-item__text">
+                                                <strong>{{ n.actor.username }}</strong>
+                                                {% if n.type == 'comment' %}commented on{% else %}saved{% endif %}
+                                                <em>{{ n.recipe.title }}</em>
+                                            </span>
+                                            <span class="bell-item__time">{{ n.createdAt|date('M j') }}</span>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
                 <div class="avatar-menu">
                     <span class="avatar">{{ app.user.username|slice(0, 2)|upper }}</span>
                     <div class="avatar-dropdown">
@@ -56,5 +94,21 @@
     </div>
 </header>
 {% block body %}{% endblock %}
+<script>
+    (function () {
+        const btn = document.getElementById('bell-btn');
+        const menu = document.getElementById('bell-menu');
+        if (!btn) return;
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            menu.classList.toggle('bell-menu--open');
+        });
+        document.addEventListener('click', function (e) {
+            if (!menu.contains(e.target)) {
+                menu.classList.remove('bell-menu--open');
+            }
+        });
+    })();
+</script>
 </body>
 </html>

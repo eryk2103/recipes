@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\CreateRecipeDto;
 use App\Dto\CreateRecipeIngredientDto;
 use App\Dto\CreateRecipeStepDto;
+use App\Entity\Notification;
 use App\Entity\RecipeComment;
 use App\Form\RecipeType;
 use App\Repository\RecipeCommentRepository;
@@ -99,6 +100,14 @@ class RecipeController extends AbstractController
             $comment = new RecipeComment();
             $comment->setRecipe($recipe)->setAuthor($user)->setBody($body);
             $em->persist($comment);
+
+            $recipeAuthor = $recipe->getAuthor();
+            if ($recipeAuthor !== $user) {
+                $notification = new Notification();
+                $notification->setRecipient($recipeAuthor)->setActor($user)->setRecipe($recipe)->setType(Notification::TYPE_COMMENT);
+                $em->persist($notification);
+            }
+
             $em->flush();
         }
 
