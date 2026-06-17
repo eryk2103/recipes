@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\Repository\IngredientRepository;
+use App\Service\IngredientService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,13 +12,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class IngredientController extends AbstractController
 {
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(Request $request, IngredientRepository $ingredientRepository): JsonResponse
+    public function index(Request $request, IngredientService $ingredientService): JsonResponse
     {
         $search = $request->query->getString('search');
 
         $ingredients = $search
-            ? $ingredientRepository->search($search)
-            : $ingredientRepository->findBy([], ['name' => 'ASC']);
+            ? $ingredientService->search($search)
+            : $ingredientService->findAll();
 
         return $this->json(array_map(fn($i) => [
             'id' => $i->getId(),

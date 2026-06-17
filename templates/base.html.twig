@@ -38,6 +38,7 @@
         {% if app.user %}
             {% set _notifications = notifications() %}
             {% set _unread = unread_notification_count() %}
+            {# _unread is derived from _notifications in NotificationExtension — single DB query #}
             <div class="nav-actions">
                 <a class="btn btn--primary" href="{{ path('app_recipe_new') }}">+ New recipe</a>
 
@@ -58,18 +59,20 @@
                                 <div class="bell-dropdown__empty">No notifications yet.</div>
                             {% else %}
                                 {% for n in _notifications %}
-                                    <a class="bell-item {% if not n.isRead %}bell-item--unread{% endif %}"
-                                       href="{{ path('app_notification_read', {id: n.id}) }}">
-                                        <span class="avatar avatar--sm">{{ n.actor.username|slice(0, 2)|upper }}</span>
-                                        <div class="bell-item__body">
-                                            <span class="bell-item__text">
-                                                <strong>{{ n.actor.username }}</strong>
-                                                {% if n.type == 'comment' %}commented on{% else %}saved{% endif %}
-                                                <em>{{ n.recipe.title }}</em>
-                                            </span>
-                                            <span class="bell-item__time">{{ n.createdAt|date('M j') }}</span>
-                                        </div>
-                                    </a>
+                                    <form method="post" action="{{ path('app_notification_read', {id: n.id}) }}" style="display:contents;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('notification-read') }}">
+                                        <button type="submit" class="bell-item {% if not n.isRead %}bell-item--unread{% endif %}">
+                                            <span class="avatar avatar--sm">{{ n.actor.username|slice(0, 2)|upper }}</span>
+                                            <div class="bell-item__body">
+                                                <span class="bell-item__text">
+                                                    <strong>{{ n.actor.username }}</strong>
+                                                    {% if n.type == 'comment' %}commented on{% else %}saved{% endif %}
+                                                    <em>{{ n.recipe.title }}</em>
+                                                </span>
+                                                <span class="bell-item__time">{{ n.createdAt|date('M j') }}</span>
+                                            </div>
+                                        </button>
+                                    </form>
                                 {% endfor %}
                             {% endif %}
                         </div>

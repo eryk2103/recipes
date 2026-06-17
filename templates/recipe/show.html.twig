@@ -200,7 +200,8 @@
             </div>
         </div>
         <section class="comments">
-            <div class="label" style="margin-bottom: var(--space-5);">Comments{% if recipe.comments is not empty %} · {{ recipe.comments|length }}{% endif %}</div>
+            {% set activeComments = recipe.comments|filter(c => not c.isDeleted) %}
+            <div class="label" style="margin-bottom: var(--space-5);">Comments{% if activeComments is not empty %} · {{ activeComments|length }}{% endif %}</div>
 
             {% if recipe.comments is empty %}
                 <p class="meta">No comments yet.</p>
@@ -214,6 +215,7 @@
                                 <span class="comment__time">{{ comment.createdAt|date('M j, Y') }}</span>
                                 {% if not comment.isDeleted and app.user and app.user.id == comment.author.id %}
                                     <form method="post" action="{{ path('app_recipe_comment_delete', {id: recipe.id, commentId: comment.id}) }}" style="margin-left: auto;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ comment.id) }}">
                                         <button type="submit" class="btn btn--ghost btn--sm">Delete</button>
                                     </form>
                                 {% endif %}
@@ -236,10 +238,14 @@
     </main>
     <script>
         let isSaved = {{ isSaved ? 'true' : 'false' }};
+        const saveCsrfToken = '{{ csrf_token("recipe-save") }}';
 
         async function toggleSave() {
             const endpoint = isSaved ? 'unsave' : 'save';
-            const res = await fetch("/api/recipes/{{ recipe.id }}/" + endpoint);
+            const res = await fetch("/api/recipes/{{ recipe.id }}/" + endpoint, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': saveCsrfToken },
+            });
             if (res.ok) {
                 isSaved = !isSaved;
                 const btn = document.getElementById('save-btn');

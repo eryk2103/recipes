@@ -16,9 +16,21 @@ class RecipeTagRepository extends ServiceEntityRepository
         parent::__construct($registry, RecipeTag::class);
     }
 
-    /**
-     * @return RecipeTag[]
-     */
+    /** @return RecipeTag[] */
+    public function findByNames(array $names): array
+    {
+        if (empty($names)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('t')
+            ->where('t.name IN (:names)')
+            ->setParameter('names', $names)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** @return RecipeTag[] */
     public function search(string $query): array
     {
         return $this->createQueryBuilder('t')

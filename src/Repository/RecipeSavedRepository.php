@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Recipe;
 use App\Entity\RecipeSaved;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +16,21 @@ class RecipeSavedRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, RecipeSaved::class);
+    }
+
+    /** @return Recipe[] */
+    public function findRecipesByUser(User $user): array
+    {
+        $results = $this->createQueryBuilder('rs')
+            ->addSelect('r')
+            ->innerJoin('rs.recipe', 'r')
+            ->where('rs.acount = :user')
+            ->setParameter('user', $user)
+            ->orderBy('r.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return array_map(fn($rs) => $rs->getRecipe(), $results);
     }
 
     //    /**

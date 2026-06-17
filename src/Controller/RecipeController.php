@@ -5,14 +5,10 @@ namespace App\Controller;
 use App\Dto\CreateRecipeDto;
 use App\Dto\CreateRecipeIngredientDto;
 use App\Dto\CreateRecipeStepDto;
-use App\Entity\Notification;
-use App\Entity\RecipeComment;
 use App\Form\RecipeType;
-use App\Repository\RecipeCommentRepository;
-use App\Repository\RecipeRepository;
+use App\Service\CommentService;
 use App\Service\FileUploadService;
 use App\Service\RecipeService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +18,10 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'app_recipe_discover', methods: ['GET'])]
-    public function discover(RecipeRepository $recipeRepository): Response
+    public function discover(RecipeService $recipeService): Response
     {
         return $this->render('recipe/discover.html.twig', [
-            'recipes' => $recipeRepository->findAllPublic(),
+            'recipes' => $recipeService->findAllPublic(),
         ]);
     }
 
@@ -55,8 +51,7 @@ class RecipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('photo')->getData();
             if ($file) {
-                $newFileName = $fileUploadService->upload($file);
-                $dto->photo = $newFileName;
+                $dto->photo = $fileUploadService->upload($file);
             }
 
             $recipeService->create($dto, $user);
@@ -70,10 +65,9 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes/{id}', name: 'app_recipe_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(int $id, RecipeService $recipeService): Response
+    public function show(int $id, #[CurrentUser] $user, RecipeService $recipeService): Response
     {
         $recipe = $recipeService->find($id);
-        $user = $this->getUser();
 
         if (!$recipe || (!$recipe->isPublic() && $recipe->getAuthor() !== $user)) {
             throw $this->createNotFoundException();
@@ -87,7 +81,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recipes/{id}/comment', name: 'app_recipe_comment', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function comment(int $id, #[CurrentUser] $user, Request $request, RecipeService $recipeService, EntityManagerInterface $em): Response
+    public function comment(int $id, #[CurrentUser] $user, Request $request, RecipeService $recipeService, CommentService $commentService): Response
     {
         $recipe = $recipeService->find($id);
 
@@ -97,34 +91,24 @@ class RecipeController extends AbstractController
 
         $body = trim($request->request->getString('body'));
         if ($body !== '') {
-            $comment = new RecipeComment();
-            $comment->setRecipe($recipe)->setAuthor($user)->setBody($body);
-            $em->persist($comment);
-
-            $recipeAuthor = $recipe->getAuthor();
-            if ($recipeAuthor !== $user) {
-                $notification = new Notification();
-                $notification->setRecipient($recipeAuthor)->setActor($user)->setRecipe($recipe)->setType(Notification::TYPE_COMMENT);
-                $em->persist($notification);
-            }
-
-            $em->flush();
+            $commentService->add($user, $recipe, $body);
         }
 
         return $this->redirectToRoute('app_recipe_show', ['id' => $id]);
     }
 
     #[Route('/recipes/{id}/comment/{commentId}/delete', name: 'app_recipe_comment_delete', methods: ['POST'], requirements: ['id' => '\d+', 'commentId' => '\d+'])]
-    public function deleteComment(int $id, int $commentId, #[CurrentUser] $user, RecipeCommentRepository $commentRepository, EntityManagerInterface $em): Response
+    public function deleteComment(int $id, int $commentId, #[CurrentUser] $user, Request $request, CommentService $commentService): Response
     {
-        $comment = $commentRepository->find($commentId);
-
-        if (!$comment || $comment->getRecipe()->getId() !== $id || $comment->getAuthor() !== $user) {
-            throw $this->createNotFoundException();
+        if (!$this->isCsrfTokenValid('delete-comment-' . $commentId, $request->request->getString('_token'))) {
+            throw $this->createAccessDeniedException();
         }
 
-        $comment->softDelete();
-        $em->flush();
+        try {
+            $commentService->softDelete($user, $commentId, $id);
+        } catch (\RuntimeException) {
+            throw $this->createNotFoundException();
+        }
 
         return $this->redirectToRoute('app_recipe_show', ['id' => $id]);
     }
@@ -146,8 +130,7 @@ class RecipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('photo')->getData();
             if ($file) {
-                $newFileName = $fileUploadService->upload($file);
-                $dto->photo = $newFileName;
+                $dto->photo = $fileUploadService->upload($file);
             }
 
             $recipeService->update($recipe, $dto);

@@ -9,6 +9,8 @@ use Twig\TwigFunction;
 
 class NotificationExtension extends AbstractExtension
 {
+    private ?array $cache = null;
+
     public function __construct(
         private NotificationRepository $notificationRepository,
         private Security $security,
@@ -25,21 +27,23 @@ class NotificationExtension extends AbstractExtension
 
     public function getNotifications(): array
     {
-        $user = $this->security->getUser();
-        if (!$user) {
-            return [];
-        }
-
-        return $this->notificationRepository->findForUser($user);
+        return $this->load();
     }
 
     public function getUnreadCount(): int
     {
-        $user = $this->security->getUser();
-        if (!$user) {
-            return 0;
+        return count(array_filter($this->load(), fn($n) => !$n->isRead()));
+    }
+
+    private function load(): array
+    {
+        if ($this->cache !== null) {
+            return $this->cache;
         }
 
-        return $this->notificationRepository->countUnread($user);
+        $user = $this->security->getUser();
+        $this->cache = $user ? $this->notificationRepository->findForUser($user) : [];
+
+        return $this->cache;
     }
 }

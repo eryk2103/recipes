@@ -8,6 +8,7 @@ use App\Dto\CreateRecipeStepDto;
 use App\Entity\Ingredient;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
+use App\Entity\Notification;
 use App\Entity\RecipeSaved;
 use App\Entity\RecipeStep;
 use App\Entity\RecipeTag;
@@ -26,8 +27,8 @@ class RecipeService
         private IngredientRepository   $ingredientRepository,
         private RecipeTagRepository    $recipeTagRepository,
         private RecipeSavedRepository  $recipeSavedRepository,
-    )
-    {
+        private NotificationService    $notificationService,
+    ) {
     }
 
     public function find(int $id): ?Recipe
@@ -35,16 +36,18 @@ class RecipeService
         return $this->recipeRepository->find($id);
     }
 
-    /**
-     * @return Recipe[]
-     */
+    /** @return Recipe[] */
     public function getByAuthor(User $user): array
     {
-        return $this->recipeRepository->findBy(['author' => $user]);
+        return $this->recipeRepository->findBy(['author' => $user], ['title' => 'ASC']);
     }
 
-    public function isSaved(User $user, Recipe $recipe): bool
+    public function isSaved(?User $user, Recipe $recipe): bool
     {
+        if ($user === null) {
+            return false;
+        }
+
         return $this->recipeSavedRepository->findOneBy(['recipe' => $recipe, 'acount' => $user]) !== null;
     }
 
@@ -64,6 +67,9 @@ class RecipeService
             ->setAcount($user);
 
         $this->entityManager->persist($newSavedRecipe);
+
+        $this->notificationService->notify($recipe->getAuthor(), $user, $recipe, Notification::TYPE_SAVE);
+
         $this->entityManager->flush();
     }
 
@@ -77,23 +83,34 @@ class RecipeService
         $this->entityManager->flush();
     }
 
-    /**
-     * @return Recipe[]
-     */
+    /** @return Recipe[] */
     public function getSavedByUser(User $user): array
     {
-        return array_map(
-            fn(RecipeSaved $s) => $s->getRecipe(),
-            $this->recipeSavedRepository->findBy(['acount' => $user])
-        );
+        return $this->recipeSavedRepository->findRecipesByUser($user);
     }
 
-    /**
-     * @return Recipe[]
-     */
+    /** @return Recipe[] */
     public function findAll(): array
     {
         return $this->recipeRepository->findAll();
+    }
+
+    /** @return Recipe[] */
+    public function findAllPublic(): array
+    {
+        return $this->recipeRepository->findAllPublic();
+    }
+
+    /** @return Recipe[] */
+    public function search(User $user, string $query): array
+    {
+        return $this->recipeRepository->searchByAuthor($user, $query);
+    }
+
+    /** @return Recipe[] */
+    public function searchPublic(string $query): array
+    {
+        return $this->recipeRepository->searchPublic($query);
     }
 
     public function create(CreateRecipeDto $dto, User $author): Recipe
@@ -180,9 +197,14 @@ class RecipeService
         $recipe->setIsPublic($dto->isPublic);
         $recipe->setPhoto($dto->photo);
 
+        $ingredientNames = array_filter(array_map(fn($d) => $d->name, $dto->recipeIngredients));
+        $ingredientMap = [];
+        foreach ($this->ingredientRepository->findByNames($ingredientNames) as $ingredient) {
+            $ingredientMap[$ingredient->getName()] = $ingredient;
+        }
+
         foreach ($dto->recipeIngredients as $recipeIngredientDto) {
-            $ingredient = $this->ingredientRepository->findOneBy(['name' => $recipeIngredientDto->name])
-                ?? new Ingredient()->setName($recipeIngredientDto->name);
+            $ingredient = $ingredientMap[$recipeIngredientDto->name] ?? new Ingredient()->setName($recipeIngredientDto->name);
 
             $recipeIngredient = new RecipeIngredient();
             $recipeIngredient->setIngredient($ingredient);
@@ -201,6 +223,12 @@ class RecipeService
             $recipe->addStep($step);
         }
 
+        $tagNames = array_filter(array_map(fn($n) => trim($n ?? ''), $dto->tags));
+        $tagMap = [];
+        foreach ($this->recipeTagRepository->findByNames($tagNames) as $tag) {
+            $tagMap[$tag->getName()] = $tag;
+        }
+
         foreach ($dto->tags as $tagName) {
             $tagName = trim($tagName ?? '');
 
@@ -208,8 +236,7 @@ class RecipeService
                 continue;
             }
 
-            $tag = $this->recipeTagRepository->findOneBy(['name' => $tagName])
-                ?? new RecipeTag()->setName($tagName);
+            $tag = $tagMap[$tagName] ?? new RecipeTag()->setName($tagName);
 
             $recipe->addTag($tag);
         }

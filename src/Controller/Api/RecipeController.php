@@ -2,10 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Notification;
-use App\Repository\RecipeRepository;
 use App\Service\RecipeService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +13,13 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class RecipeController extends AbstractController
 {
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(#[CurrentUser] $user, Request $request, RecipeRepository $recipeRepository): JsonResponse
+    public function index(#[CurrentUser] $user, Request $request, RecipeService $recipeService): JsonResponse
     {
         $search = $request->query->getString('search');
 
         $recipes = $search
-            ? $recipeRepository->searchByAuthor($user, $search)
-            : $recipeRepository->findBy(['author' => $user], ['title' => 'ASC']);
+            ? $recipeService->search($user, $search)
+            : $recipeService->getByAuthor($user);
 
         return $this->json(array_map(fn($r) => [
             'id' => $r->getId(),
@@ -32,13 +29,13 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/public', name: 'public', methods: ['GET'])]
-    public function public(Request $request, RecipeRepository $recipeRepository): JsonResponse
+    public function public(Request $request, RecipeService $recipeService): JsonResponse
     {
         $search = $request->query->getString('search');
 
         $recipes = $search
-            ? $recipeRepository->searchPublic($search)
-            : $recipeRepository->findAllPublic();
+            ? $recipeService->searchPublic($search)
+            : $recipeService->findAllPublic();
 
         return $this->json(array_map(fn($r) => [
             'id' => $r->getId(),
@@ -46,9 +43,13 @@ class RecipeController extends AbstractController
         ], $recipes));
     }
 
-    #[Route('/{id}/save', name: 'save', methods: ['GET'])]
-    public function save(int $id, RecipeService $recipeService, EntityManagerInterface $em, #[CurrentUser] $user): JsonResponse
+    #[Route('/{id}/save', name: 'save', methods: ['POST'])]
+    public function save(int $id, RecipeService $recipeService, Request $request, #[CurrentUser] $user): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('recipe-save', $request->headers->get('X-CSRF-TOKEN'))) {
+            return $this->json(null, 403);
+        }
+
         $recipe = $recipeService->find($id);
         if ($recipe === null) {
             throw $this->createNotFoundException();
@@ -56,32 +57,28 @@ class RecipeController extends AbstractController
 
         try {
             $recipeService->save($user, $recipe);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $this->json(null, 400);
         }
-
-        $notification = new Notification();
-        $notification->setRecipient($recipe->getAuthor())->setActor($user)->setRecipe($recipe)->setType(Notification::TYPE_SAVE);
-        $em->persist($notification);
-        $em->flush();
 
         return $this->json(null, 204);
     }
 
-    #[Route('/{id}/unsave', name: 'unsave', methods: ['GET'])]
-    public function unsave(int $id, RecipeService $recipeService, #[CurrentUser] $user): JsonResponse
+    #[Route('/{id}/unsave', name: 'unsave', methods: ['POST'])]
+    public function unsave(int $id, RecipeService $recipeService, Request $request, #[CurrentUser] $user): JsonResponse
     {
+        if (!$this->isCsrfTokenValid('recipe-save', $request->headers->get('X-CSRF-TOKEN'))) {
+            return $this->json(null, 403);
+        }
+
         $recipe = $recipeService->find($id);
-        if($recipe === null)
-        {
+        if ($recipe === null) {
             throw $this->createNotFoundException();
         }
 
-        try{
+        try {
             $recipeService->unsave($user, $recipe);
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception) {
             return $this->json(null, 400);
         }
 
