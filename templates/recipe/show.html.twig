@@ -49,6 +49,72 @@
             border-radius: var(--radius-lg);
             margin-bottom: var(--space-7);
         }
+
+        .comments {
+            margin-top: var(--space-9);
+            border-top: 1px solid var(--line);
+            padding-top: var(--space-7);
+        }
+
+        .comment {
+            display: flex;
+            gap: 12px;
+            padding: var(--space-4) 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .comment__body {
+            flex: 1;
+        }
+
+        .comment__meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .comment__author {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .comment__time {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .comment__text {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .comment-form {
+            margin-top: var(--space-5);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            background: var(--surface);
+            color: var(--ink);
+            box-sizing: border-box;
+        }
+
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
         .page-actions {
             margin-bottom: 1rem;
         }
@@ -133,6 +199,40 @@
                 </div>
             </div>
         </div>
+        <section class="comments">
+            <div class="label" style="margin-bottom: var(--space-5);">Comments{% if recipe.comments is not empty %} · {{ recipe.comments|length }}{% endif %}</div>
+
+            {% if recipe.comments is empty %}
+                <p class="meta">No comments yet.</p>
+            {% else %}
+                {% for comment in recipe.comments %}
+                    <div class="comment">
+                        <span class="avatar avatar--sm">{{ comment.author.username|slice(0, 2)|upper }}</span>
+                        <div class="comment__body">
+                            <div class="comment__meta">
+                                <span class="comment__author">{{ comment.author.username }}</span>
+                                <span class="comment__time">{{ comment.createdAt|date('M j, Y') }}</span>
+                                {% if not comment.isDeleted and app.user and app.user.id == comment.author.id %}
+                                    <form method="post" action="{{ path('app_recipe_comment_delete', {id: recipe.id, commentId: comment.id}) }}" style="margin-left: auto;">
+                                        <button type="submit" class="btn btn--ghost btn--sm">Delete</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                            <p class="comment__text">{{ comment.isDeleted ? '[deleted]' : comment.body }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if app.user %}
+                <form class="comment-form" method="post" action="{{ path('app_recipe_comment', {id: recipe.id}) }}">
+                    <textarea name="body" placeholder="Add a comment…" required></textarea>
+                    <div>
+                        <button type="submit" class="btn btn--primary">Post comment</button>
+                    </div>
+                </form>
+            {% endif %}
+        </section>
     </main>
     <script>
         let isSaved = {{ isSaved ? 'true' : 'false' }};

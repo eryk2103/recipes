@@ -63,12 +63,20 @@ class Recipe
     #[ORM\OneToMany(targetEntity: RecipeSaved::class, mappedBy: 'recipe')]
     private Collection $saved;
 
+    /**
+     * @var Collection<int, RecipeComment>
+     */
+    #[ORM\OneToMany(targetEntity: RecipeComment::class, mappedBy: 'recipe', orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'ASC'])]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->steps = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->saved = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -272,5 +280,13 @@ class Recipe
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, RecipeComment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
     }
 }
