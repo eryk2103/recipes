@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Repository\RecipeRepository;
+use App\Service\RecipeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,5 +42,45 @@ class RecipeController extends AbstractController
             'id' => $r->getId(),
             'title' => $r->getTitle(),
         ], $recipes));
+    }
+
+    #[Route('/{id}/save', name: 'save', methods: ['GET'])]
+    public function save(int $id, RecipeService $recipeService, #[CurrentUser] $user): JsonResponse
+    {
+        $recipe = $recipeService->find($id);
+        if($recipe === null)
+        {
+            throw $this->createNotFoundException();
+        }
+
+        try{
+            $recipeService->save($user, $recipe);
+        }
+        catch(\Exception $e)
+        {
+            return $this->json(null, 400);
+        }
+
+        return $this->json(null, 204);
+    }
+
+    #[Route('/{id}/unsave', name: 'unsave', methods: ['GET'])]
+    public function unsave(int $id, RecipeService $recipeService, #[CurrentUser] $user): JsonResponse
+    {
+        $recipe = $recipeService->find($id);
+        if($recipe === null)
+        {
+            throw $this->createNotFoundException();
+        }
+
+        try{
+            $recipeService->unsave($user, $recipe);
+        }
+        catch(\Exception $e)
+        {
+            return $this->json(null, 400);
+        }
+
+        return $this->json(null, 204);
     }
 }

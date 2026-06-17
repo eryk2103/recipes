@@ -42,9 +42,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Recipe::class, mappedBy: 'author')]
     private Collection $recipes;
 
+    /**
+     * @var Collection<int, RecipeSaved>
+     */
+    #[ORM\OneToMany(targetEntity: RecipeSaved::class, mappedBy: 'acount')]
+    private Collection $savedRecipes;
+
     public function __construct()
     {
         $this->recipes = new ArrayCollection();
+        $this->savedRecipes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +153,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($recipe->getAuthor() === $this) {
                 $recipe->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RecipeSaved>
+     */
+    public function getSavedRecipes(): Collection
+    {
+        return $this->savedRecipes;
+    }
+
+    public function addSavedRecipe(RecipeSaved $savedRecipe): static
+    {
+        if (!$this->savedRecipes->contains($savedRecipe)) {
+            $this->savedRecipes->add($savedRecipe);
+            $savedRecipe->setAcount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSavedRecipe(RecipeSaved $savedRecipe): static
+    {
+        if ($this->savedRecipes->removeElement($savedRecipe)) {
+            // set the owning side to null (unless already changed)
+            if ($savedRecipe->getAcount() === $this) {
+                $savedRecipe->setAcount(null);
             }
         }
 

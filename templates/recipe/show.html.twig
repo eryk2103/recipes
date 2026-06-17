@@ -49,6 +49,9 @@
             border-radius: var(--radius-lg);
             margin-bottom: var(--space-7);
         }
+        .page-actions {
+            margin-bottom: 1rem;
+        }
     </style>
 {% endblock %}
 {% block body %}
@@ -83,7 +86,13 @@
                 </span>
             </div>
         </div>
-
+        <div class="page-actions">
+            {% if not isOwner %}
+            <button id="save-btn" class="btn {% if isSaved %}btn--primary{% endif %}" onclick="toggleSave()">
+                {{ isSaved ? 'Remove save' : 'Save' }}
+            </button>
+            {% endif %}
+        </div>
         {% if recipe.photo %}
             <div class="card__photo detail-photo">
                 <img class="" src="{{ asset('uploads/recipe_photos/' ~ recipe.photo) }}"
@@ -125,4 +134,18 @@
             </div>
         </div>
     </main>
+    <script>
+        let isSaved = {{ isSaved ? 'true' : 'false' }};
+
+        async function toggleSave() {
+            const endpoint = isSaved ? 'unsave' : 'save';
+            const res = await fetch("/api/recipes/{{ recipe.id }}/" + endpoint);
+            if (res.ok) {
+                isSaved = !isSaved;
+                const btn = document.getElementById('save-btn');
+                btn.textContent = isSaved ? 'Remove save' : 'Save';
+                btn.classList.toggle('btn--primary', isSaved);
+            }
+        }
+    </script>
 {% endblock %}

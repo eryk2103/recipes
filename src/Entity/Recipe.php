@@ -57,11 +57,18 @@ class Recipe
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
+    /**
+     * @var Collection<int, RecipeSaved>
+     */
+    #[ORM\OneToMany(targetEntity: RecipeSaved::class, mappedBy: 'recipe')]
+    private Collection $saved;
+
     public function __construct()
     {
         $this->steps = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->saved = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -233,6 +240,36 @@ class Recipe
     public function setPhoto(?string $photo): static
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RecipeSaved>
+     */
+    public function getSaved(): Collection
+    {
+        return $this->saved;
+    }
+
+    public function addSaved(RecipeSaved $saved): static
+    {
+        if (!$this->saved->contains($saved)) {
+            $this->saved->add($saved);
+            $saved->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSaved(RecipeSaved $saved): static
+    {
+        if ($this->saved->removeElement($saved)) {
+            // set the owning side to null (unless already changed)
+            if ($saved->getRecipe() === $this) {
+                $saved->setRecipe(null);
+            }
+        }
 
         return $this;
     }

@@ -30,12 +30,14 @@
                 <button class="chip chip--active" data-visibility="all">All</button>
                 <button class="chip" data-visibility="public">Public</button>
                 <button class="chip" data-visibility="private">Private</button>
+                <button class="chip" data-visibility="saved">Saved</button>
             </nav>
 
             <p class="meta" id="no-results" hidden>No recipes found.</p>
 
             <div class="grid-3">
                 {% for recipe in recipes %}
+                    {% set isOwn = app.user.id == recipe.author.id %}
                     {% set tagNames = [] %}
                     {% for tag in recipe.tags %}
                         {% set tagNames = tagNames|merge([tag.name|lower]) %}
@@ -46,6 +48,7 @@
                     {% endfor %}
                     <article class="recipe-card card" style="position: relative;"
                              data-public="{{ recipe.isPublic ? 'true' : 'false' }}"
+                             data-saved="{{ isOwn ? 'false' : 'true' }}"
                              data-tags="{{ tagNames|join(',') }}"
                              data-ingredients="{{ ingredientNames|join(',') }}">
                         <a href="{{ path('app_recipe_show', {id: recipe.id}) }}"
@@ -54,12 +57,12 @@
                             <div class="card__photo">
                                 <img class="" src="{{ asset('uploads/recipe_photos/' ~ recipe.photo) }}"
                                      alt="recipe photo"/>
-                                <span class="card__visibility">{{ recipe.isPublic ? 'Public' : 'Private' }}</span>
+                                <span class="card__visibility">{{ isOwn ? (recipe.isPublic ? 'Public' : 'Private') : 'Saved' }}</span>
                             </div>
                         {% else %}
                             <div class="card__photo photo-placeholder">
                                 No photo yet
-                                <span class="card__visibility">{{ recipe.isPublic ? 'Public' : 'Private' }}</span>
+                                <span class="card__visibility">{{ isOwn ? (recipe.isPublic ? 'Public' : 'Private') : 'Saved' }}</span>
                             </div>
                         {% endif %}
 
@@ -74,9 +77,11 @@
                             <h3 class="h2">{{ recipe.title }}</h3>
                             <div class="card__author">
                                 <span class="avatar avatar--sm">{{ recipe.author.username|slice(0, 2)|upper }}</span>
-                                <span class="card__author-name">You</span>
-                                <a class="btn btn--ghost btn--sm" href="{{ path('app_recipe_edit', {id: recipe.id}) }}"
-                                   style="position: relative; z-index: 2;">Edit</a>
+                                <span class="card__author-name">{{ isOwn ? 'You' : recipe.author.username }}</span>
+                                {% if isOwn %}
+                                    <a class="btn btn--ghost btn--sm" href="{{ path('app_recipe_edit', {id: recipe.id}) }}"
+                                       style="position: relative; z-index: 2;">Edit</a>
+                                {% endif %}
                             </div>
                             <div class="card__stats">
                                 <span class="stat">{{ recipe.recipeIngredients|length }} ingredients</span>
@@ -241,9 +246,11 @@
                 let anyVisible = false;
                 cards.forEach(card => {
                     const isPublic = card.dataset.public === 'true';
+                    const isSaved = card.dataset.saved === 'true';
                     const visibilityMatch = visibilityFilter === 'all'
-                        || (visibilityFilter === 'public' && isPublic)
-                        || (visibilityFilter === 'private' && !isPublic);
+                        || (visibilityFilter === 'public' && isPublic && !isSaved)
+                        || (visibilityFilter === 'private' && !isPublic && !isSaved)
+                        || (visibilityFilter === 'saved' && isSaved);
 
                     const cardTags = (card.dataset.tags || '').split(',').filter(Boolean);
                     const cardIngs = (card.dataset.ingredients || '').split(',').filter(Boolean);

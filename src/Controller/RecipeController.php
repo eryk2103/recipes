@@ -28,7 +28,10 @@ class RecipeController extends AbstractController
     #[Route('/recipes', name: 'app_recipe_index', methods: ['GET'])]
     public function index(#[CurrentUser] $user, RecipeService $recipeService): Response
     {
-        $recipes = $recipeService->getByAuthor($user);
+        $recipes = array_merge(
+            $recipeService->getByAuthor($user),
+            $recipeService->getSavedByUser($user),
+        );
 
         return $this->render('recipe/index.html.twig', [
             'recipes' => $recipes,
@@ -75,6 +78,7 @@ class RecipeController extends AbstractController
         return $this->render('recipe/show.html.twig', [
             'recipe' => $recipe,
             'isOwner' => $recipe->getAuthor() === $user,
+            'isSaved' => $recipeService->isSaved($user, $recipe),
         ]);
     }
 

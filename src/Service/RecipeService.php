@@ -8,11 +8,13 @@ use App\Dto\CreateRecipeStepDto;
 use App\Entity\Ingredient;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
+use App\Entity\RecipeSaved;
 use App\Entity\RecipeStep;
 use App\Entity\RecipeTag;
 use App\Entity\User;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
+use App\Repository\RecipeSavedRepository;
 use App\Repository\RecipeTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -20,10 +22,12 @@ class RecipeService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private RecipeRepository $recipeRepository,
-        private IngredientRepository $ingredientRepository,
-        private RecipeTagRepository $recipeTagRepository,
-    ) {
+        private RecipeRepository       $recipeRepository,
+        private IngredientRepository   $ingredientRepository,
+        private RecipeTagRepository    $recipeTagRepository,
+        private RecipeSavedRepository  $recipeSavedRepository,
+    )
+    {
     }
 
     public function find(int $id): ?Recipe
@@ -37,6 +41,51 @@ class RecipeService
     public function getByAuthor(User $user): array
     {
         return $this->recipeRepository->findBy(['author' => $user]);
+    }
+
+    public function isSaved(User $user, Recipe $recipe): bool
+    {
+        return $this->recipeSavedRepository->findOneBy(['recipe' => $recipe, 'acount' => $user]) !== null;
+    }
+
+    public function save(User $user, Recipe $recipe): void
+    {
+        $savedRecipe = $this->recipeSavedRepository->findOneBy(['recipe' => $recipe, 'acount' => $user]);
+        if ($savedRecipe !== null) {
+            throw new \RuntimeException('Recipe already saved');
+        }
+
+        if ($recipe->getAuthor()->getId() === $user->getId()) {
+            throw new \RuntimeException('Cannot save your own recipe.');
+        }
+
+        $newSavedRecipe = new RecipeSaved()
+            ->setRecipe($recipe)
+            ->setAcount($user);
+
+        $this->entityManager->persist($newSavedRecipe);
+        $this->entityManager->flush();
+    }
+
+    public function unsave(User $user, Recipe $recipe): void
+    {
+        $savedRecipe = $this->recipeSavedRepository->findOneBy(['recipe' => $recipe, 'acount' => $user]);
+        if ($savedRecipe === null) {
+            throw new \RuntimeException('Recipe save not found');
+        }
+        $this->entityManager->remove($savedRecipe);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @return Recipe[]
+     */
+    public function getSavedByUser(User $user): array
+    {
+        return array_map(
+            fn(RecipeSaved $s) => $s->getRecipe(),
+            $this->recipeSavedRepository->findBy(['acount' => $user])
+        );
     }
 
     /**
