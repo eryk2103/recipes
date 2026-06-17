@@ -138,3 +138,14 @@
 .comment__meta form {
     margin-left: auto;
 }
+
+@media (max-width: 640px) {
+    .detail-photo {
+        height: 220px;
+    }
+
+    .detail-bar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
