@@ -1,0 +1,140 @@
+.detail-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.ingredient-list-view {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ingredient-list-view li {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+}
+
+.ingredient-amount {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+.step-list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.method-label {
+    margin: var(--space-7) 0 var(--space-5);
+}
+
+.detail-photo {
+    width: 100%;
+    height: 360px;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-7);
+}
+
+.comments {
+    margin-top: var(--space-9);
+    border-top: 1px solid var(--line);
+    padding-top: var(--space-7);
+}
+
+.comment {
+    display: flex;
+    gap: 12px;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.comment__body {
+    flex: 1;
+}
+
+.comment__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.comment__author {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.comment__time {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.comment__text {
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.comment-form {
+    margin-top: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    background: var(--surface);
+    color: var(--ink);
+    box-sizing: border-box;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.page-actions {
+    margin-bottom: 1rem;
+}
+
+.page-head .card__tags {
+    margin-bottom: 12px;
+}
+
+.page-head .meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-head .label {
+    margin-bottom: var(--space-3);
+}
+
+.comments > .label {
+    margin-bottom: var(--space-5);
+}
+
+.comment__meta form {
+    margin-left: auto;
+}

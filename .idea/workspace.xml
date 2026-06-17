@@ -2,19 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91f5b10d-e87b-4667-9082-64cbc58036c0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/IngredientController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/IngredientController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/RecipeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/RecipeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/RecipeTagController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/RecipeTagController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/NotificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/NotificationController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RecipeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RecipeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/IngredientRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/IngredientRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/RecipeSavedRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/RecipeSavedRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/RecipeTagRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/RecipeTagRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/RecipeService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/RecipeService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Twig/NotificationExtension.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Twig/NotificationExtension.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/discover.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/discover.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/edit.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/recipe/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/new.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/recipe/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/recipe/show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

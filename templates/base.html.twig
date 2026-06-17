@@ -59,7 +59,7 @@
                                 <div class="bell-dropdown__empty">No notifications yet.</div>
                             {% else %}
                                 {% for n in _notifications %}
-                                    <form method="post" action="{{ path('app_notification_read', {id: n.id}) }}" style="display:contents;">
+                                    <form method="post" action="{{ path('app_notification_read', {id: n.id}) }}" class="form--contents">
                                         <input type="hidden" name="_token" value="{{ csrf_token('notification-read') }}">
                                         <button type="submit" class="bell-item {% if not n.isRead %}bell-item--unread{% endif %}">
                                             <span class="avatar avatar--sm">{{ n.actor.username|slice(0, 2)|upper }}</span>
@@ -97,21 +97,6 @@
     </div>
 </header>
 {% block body %}{% endblock %}
-<script>
-    (function () {
-        const btn = document.getElementById('bell-btn');
-        const menu = document.getElementById('bell-menu');
-        if (!btn) return;
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            menu.classList.toggle('bell-menu--open');
-        });
-        document.addEventListener('click', function (e) {
-            if (!menu.contains(e.target)) {
-                menu.classList.remove('bell-menu--open');
-            }
-        });
-    })();
-</script>
+<script src="{{ asset('js/bell.js') }}"></script>
 </body>
 </html>

@@ -1,124 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block stylesheets %}
-    <style>
-        .detail-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 14px;
-        }
-
-        .ingredient-list-view {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .ingredient-list-view li {
-            display: flex;
-            gap: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--line);
-            font-size: 14px;
-        }
-
-        .ingredient-amount {
-            font-family: var(--font-mono);
-            color: var(--muted);
-            min-width: 70px;
-            flex-shrink: 0;
-        }
-
-        .step-list-view {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-
-        .method-label {
-            margin: var(--space-7) 0 var(--space-5);
-        }
-
-        .detail-photo {
-            width: 100%;
-            height: 360px;
-            border-radius: var(--radius-lg);
-            margin-bottom: var(--space-7);
-        }
-
-        .comments {
-            margin-top: var(--space-9);
-            border-top: 1px solid var(--line);
-            padding-top: var(--space-7);
-        }
-
-        .comment {
-            display: flex;
-            gap: 12px;
-            padding: var(--space-4) 0;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .comment__body {
-            flex: 1;
-        }
-
-        .comment__meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-
-        .comment__author {
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .comment__time {
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .comment__text {
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .comment-form {
-            margin-top: var(--space-5);
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-3);
-        }
-
-        .comment-form textarea {
-            width: 100%;
-            min-height: 80px;
-            padding: 10px 12px;
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            font-family: inherit;
-            font-size: 14px;
-            resize: vertical;
-            background: var(--surface);
-            color: var(--ink);
-            box-sizing: border-box;
-        }
-
-        .comment-form textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        .page-actions {
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/show.css') }}">
 {% endblock %}
 {% block body %}
     <main>
@@ -133,14 +15,14 @@
 
         <div class="page-head">
             {% if recipe.tags is not empty %}
-                <div class="card__tags" style="margin-bottom: 12px;">
+                <div class="card__tags">
                     {% for tag in recipe.tags %}
                         <span class="tag">{{ tag.name }}</span>
                     {% endfor %}
                 </div>
             {% endif %}
             <h1 class="display page-title">{{ recipe.title }}</h1>
-            <div class="meta" style="display: flex; align-items: center; gap: 10px;">
+            <div class="meta">
                 <span class="card__author">
                     <span class="avatar avatar--sm">{{ recipe.author.username|slice(0, 2)|upper }}</span>
                     <span class="card__author-name" style="font-size: 16px; font-weight: 500; color: var(--ink);">{{ recipe.author.username }}</span>
@@ -154,7 +36,7 @@
         </div>
         <div class="page-actions">
             {% if not isOwner %}
-            <button id="save-btn" class="btn {% if isSaved %}btn--primary{% endif %}" onclick="toggleSave()">
+            <button id="save-btn" class="btn {% if isSaved %}btn--primary{% endif %}">
                 {{ isSaved ? 'Remove save' : 'Save' }}
             </button>
             {% endif %}
@@ -172,7 +54,7 @@
 
         <div class="recipe-layout">
             <aside>
-                <div class="label" style="margin-bottom: var(--space-3);">Ingredients</div>
+                <div class="label">Ingredients</div>
                 <ul class="ingredient-list-view">
                     {% for ingredient in recipe.recipeIngredients %}
                         <li>
@@ -201,7 +83,7 @@
         </div>
         <section class="comments">
             {% set activeComments = recipe.comments|filter(c => not c.isDeleted) %}
-            <div class="label" style="margin-bottom: var(--space-5);">Comments{% if activeComments is not empty %} · {{ activeComments|length }}{% endif %}</div>
+            <div class="label">Comments{% if activeComments is not empty %} · {{ activeComments|length }}{% endif %}</div>
 
             {% if recipe.comments is empty %}
                 <p class="meta">No comments yet.</p>
@@ -214,7 +96,7 @@
                                 <span class="comment__author">{{ comment.author.username }}</span>
                                 <span class="comment__time">{{ comment.createdAt|date('M j, Y') }}</span>
                                 {% if not comment.isDeleted and app.user and app.user.id == comment.author.id %}
-                                    <form method="post" action="{{ path('app_recipe_comment_delete', {id: recipe.id, commentId: comment.id}) }}" style="margin-left: auto;">
+                                    <form method="post" action="{{ path('app_recipe_comment_delete', {id: recipe.id, commentId: comment.id}) }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ comment.id) }}">
                                         <button type="submit" class="btn btn--ghost btn--sm">Delete</button>
                                     </form>
@@ -236,22 +118,13 @@
             {% endif %}
         </section>
     </main>
-    <script>
-        let isSaved = {{ isSaved ? 'true' : 'false' }};
-        const saveCsrfToken = '{{ csrf_token("recipe-save") }}';
+    {% if not isOwner %}
+        <div id="page-data" hidden
+             data-recipe-id="{{ recipe.id }}"
+             data-is-saved="{{ isSaved ? '1' : '0' }}"
+             data-csrf-token="{{ csrf_token('recipe-save') }}">
 
-        async function toggleSave() {
-            const endpoint = isSaved ? 'unsave' : 'save';
-            const res = await fetch("/api/recipes/{{ recipe.id }}/" + endpoint, {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': saveCsrfToken },
-            });
-            if (res.ok) {
-                isSaved = !isSaved;
-                const btn = document.getElementById('save-btn');
-                btn.textContent = isSaved ? 'Remove save' : 'Save';
-                btn.classList.toggle('btn--primary', isSaved);
-            }
-        }
-    </script>
+        </div>
+        <script src="{{ asset('js/show.js') }}"></script>
+    {% endif %}
 {% endblock %}
