@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\NutritionStatus;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -69,6 +70,12 @@ class Recipe
     #[ORM\OneToMany(targetEntity: RecipeComment::class, mappedBy: 'recipe', orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC'])]
     private Collection $comments;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $nutrition = null;
+
+    #[ORM\Column(nullable: true, enumType: NutritionStatus::class)]
+    private ?NutritionStatus $nutritionStatus = null;
 
     public function __construct()
     {
@@ -288,5 +295,29 @@ class Recipe
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    public function getNutrition(): ?array
+    {
+        return $this->nutrition;
+    }
+
+    public function setNutrition(?array $nutrition): static
+    {
+        $this->nutrition = $nutrition;
+
+        return $this;
+    }
+
+    public function getNutritionStatus(): ?NutritionStatus
+    {
+        return $this->nutritionStatus;
+    }
+
+    public function setNutritionStatus(?NutritionStatus $nutritionStatus): static
+    {
+        $this->nutritionStatus = $nutritionStatus;
+
+        return $this;
     }
 }

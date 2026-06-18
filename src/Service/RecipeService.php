@@ -13,11 +13,14 @@ use App\Entity\RecipeSaved;
 use App\Entity\RecipeStep;
 use App\Entity\RecipeTag;
 use App\Entity\User;
+use App\Enum\NutritionStatus;
+use App\Message\CalculateRecipeNutritionMessage;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\RecipeSavedRepository;
 use App\Repository\RecipeTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class RecipeService
 {
@@ -28,6 +31,7 @@ class RecipeService
         private RecipeTagRepository    $recipeTagRepository,
         private RecipeSavedRepository  $recipeSavedRepository,
         private NotificationService    $notificationService,
+        private MessageBusInterface $bus,
     ) {
     }
 
@@ -120,9 +124,12 @@ class RecipeService
 
         $this->applyDto($recipe, $dto);
 
+        $recipe->setNutritionStatus(NutritionStatus::PENDING);
+
         $this->entityManager->persist($recipe);
         $this->entityManager->flush();
 
+        $this->bus->dispatch(new CalculateRecipeNutritionMessage($recipe->getId()));
         return $recipe;
     }
 
@@ -141,10 +148,28 @@ class RecipeService
         }
 
         $this->applyDto($recipe, $dto);
+        $recipe->setNutritionStatus(NutritionStatus::PENDING);
 
         $this->entityManager->flush();
 
+        $this->bus->dispatch(new CalculateRecipeNutritionMessage($recipe->getId()));
         return $recipe;
+    }
+
+    public function setNutrition(Recipe $recipe, array $json): void
+    {
+        $recipe->setNutrition($json)
+            ->setNutritionStatus(NutritionStatus::DONE);
+
+        $this->entityManager->persist($recipe);
+        $this->entityManager->flush();
+    }
+
+    public function setNutritionStatus(Recipe $recipe, NutritionStatus $status): void
+    {
+        $recipe->setNutritionStatus($status);
+        $this->entityManager->persist($recipe);
+        $this->entityManager->flush();
     }
 
     public function delete(Recipe $recipe): void

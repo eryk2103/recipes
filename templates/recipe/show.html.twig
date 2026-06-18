@@ -25,7 +25,8 @@
             <div class="meta">
                 <span class="card__author">
                     <span class="avatar avatar--sm">{{ recipe.author.username|slice(0, 2)|upper }}</span>
-                    <span class="card__author-name" style="font-size: 16px; font-weight: 500; color: var(--ink);">{{ recipe.author.username }}</span>
+                    <span class="card__author-name"
+                          style="font-size: 16px; font-weight: 500; color: var(--ink);">{{ recipe.author.username }}</span>
                 </span>
                 <span>·</span>
                 <span>
@@ -36,9 +37,9 @@
         </div>
         <div class="page-actions">
             {% if not isOwner %}
-            <button id="save-btn" class="btn {% if isSaved %}btn--primary{% endif %}">
-                {{ isSaved ? 'Remove save' : 'Save' }}
-            </button>
+                <button id="save-btn" class="btn {% if isSaved %}btn--primary{% endif %}">
+                    {{ isSaved ? 'Remove save' : 'Save' }}
+                </button>
             {% endif %}
         </div>
         {% if recipe.photo %}
@@ -69,7 +70,49 @@
                 {% if recipe.notes %}
                     <p class="lede">{{ recipe.notes }}</p>
                 {% endif %}
-
+                {% if recipe.nutritionStatus != null %}
+                    <div class="ai-nutrition ai-nutrition--{{ recipe.nutritionStatus.value|lower }}">
+                        <div class="ai-nutrition__head">
+                            <span class="label label--accent">AI Nutrition</span>
+                            {% if recipe.nutritionStatus.value != 'DONE' %}
+                                <span class="ai-nutrition__status">{{ recipe.nutritionStatus.value|lower }}</span>
+                            {% endif %}
+                        </div>
+                        {% if recipe.nutritionStatus.value == 'DONE' and recipe.nutrition %}
+                            {% set nutrition = recipe.nutrition %}
+                            <div class="ai-nutrition__stats">
+                                <div class="ai-nutrition__stat">
+                                    <span class="ai-nutrition__stat-value">{{ nutrition.total_calories }}</span>
+                                    <span class="ai-nutrition__stat-label">total kcal</span>
+                                </div>
+                                <div class="ai-nutrition__stat">
+                                    <span class="ai-nutrition__stat-value">{{ nutrition.calories_per_serving }}</span>
+                                    <span class="ai-nutrition__stat-label">per serving</span>
+                                </div>
+                                {% if nutrition.confidence %}
+                                    <div class="ai-nutrition__stat">
+                                        <span class="ai-nutrition__stat-value ai-nutrition__confidence ai-nutrition__confidence--{{ nutrition.confidence }}">{{ nutrition.confidence }}</span>
+                                        <span class="ai-nutrition__stat-label">confidence</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if nutrition.breakdown is not empty %}
+                                <ul class="ai-nutrition__breakdown">
+                                    {% for item in nutrition.breakdown %}
+                                        <li>
+                                            <span>{{ item.ingredient }}</span>
+                                            <span>{{ item.calories }} kcal</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% elseif recipe.nutritionStatus.value == 'PENDING' %}
+                            <p class="meta">Calculating nutrition estimate…</p>
+                        {% elseif recipe.nutritionStatus.value == 'FAILED' %}
+                            <p class="meta">Couldn't estimate nutrition for this recipe.</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
                 <div class="label method-label">Method</div>
                 <div class="step-list-view">
                     {% for step in recipe.steps %}
@@ -83,7 +126,8 @@
         </div>
         <section class="comments">
             {% set activeComments = recipe.comments|filter(c => not c.isDeleted) %}
-            <div class="label">Comments{% if activeComments is not empty %} · {{ activeComments|length }}{% endif %}</div>
+            <div class="label">
+                Comments{% if activeComments is not empty %} · {{ activeComments|length }}{% endif %}</div>
 
             {% if recipe.comments is empty %}
                 <p class="meta">No comments yet.</p>
@@ -96,8 +140,10 @@
                                 <span class="comment__author">{{ comment.author.username }}</span>
                                 <span class="comment__time">{{ comment.createdAt|date('M j, Y') }}</span>
                                 {% if not comment.isDeleted and app.user and app.user.id == comment.author.id %}
-                                    <form method="post" action="{{ path('app_recipe_comment_delete', {id: recipe.id, commentId: comment.id}) }}">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ comment.id) }}">
+                                    <form method="post"
+                                          action="{{ path('app_recipe_comment_delete', {id: recipe.id, commentId: comment.id}) }}">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('delete-comment-' ~ comment.id) }}">
                                         <button type="submit" class="btn btn--ghost btn--sm">Delete</button>
                                     </form>
                                 {% endif %}

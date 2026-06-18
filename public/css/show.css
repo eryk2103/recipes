@@ -40,6 +40,83 @@
     margin: var(--space-7) 0 var(--space-5);
 }
 
+.ai-nutrition {
+    margin: var(--space-7) 0;
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+}
+
+.ai-nutrition__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+}
+
+.ai-nutrition__status {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--surface-2);
+    color: var(--muted);
+}
+
+.ai-nutrition--failed .ai-nutrition__status {
+    color: var(--accent);
+}
+
+.ai-nutrition__stats {
+    display: flex;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.ai-nutrition__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ai-nutrition__stat-value {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--ink);
+}
+
+.ai-nutrition__stat-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.ai-nutrition__confidence--low {
+    color: var(--accent);
+}
+
+.ai-nutrition__breakdown {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ai-nutrition__breakdown li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--muted);
+}
+
 .detail-photo {
     width: 100%;
     height: 360px;
