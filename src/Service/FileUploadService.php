@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use App\Service\Interface\FileUploadServiceInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
-class FileUploadService
+class FileUploadService implements FileUploadServiceInterface
 {
     public function upload(File $file): string
     {
