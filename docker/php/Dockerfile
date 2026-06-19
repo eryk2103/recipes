@@ -24,5 +24,9 @@ WORKDIR /var/www
 
 RUN mkdir -p var && chown -R www-data:www-data var
 
+RUN mkdir -p public/uploads/recipe_photos \
+    && chown -R www-data:www-data public/uploads \
+    && chmod -R 755 public/uploads
+
 
 EXPOSE 9000
