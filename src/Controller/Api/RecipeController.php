@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\User;
 use App\Service\RecipeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class RecipeController extends AbstractController
 {
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(#[CurrentUser] $user, Request $request, RecipeService $recipeService): JsonResponse
+    public function index(#[CurrentUser] User $user, Request $request, RecipeService $recipeService): JsonResponse
     {
         $search = $request->query->getString('search');
 
@@ -44,7 +45,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/{id}/save', name: 'save', methods: ['POST'])]
-    public function save(int $id, RecipeService $recipeService, Request $request, #[CurrentUser] $user): JsonResponse
+    public function save(int $id, RecipeService $recipeService, Request $request, #[CurrentUser] User $user): JsonResponse
     {
         if (!$this->isCsrfTokenValid('recipe-save', $request->headers->get('X-CSRF-TOKEN'))) {
             return $this->json(null, 403);
@@ -65,7 +66,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/{id}/unsave', name: 'unsave', methods: ['POST'])]
-    public function unsave(int $id, RecipeService $recipeService, Request $request, #[CurrentUser] $user): JsonResponse
+    public function unsave(int $id, RecipeService $recipeService, Request $request, #[CurrentUser] User $user): JsonResponse
     {
         if (!$this->isCsrfTokenValid('recipe-save', $request->headers->get('X-CSRF-TOKEN'))) {
             return $this->json(null, 403);

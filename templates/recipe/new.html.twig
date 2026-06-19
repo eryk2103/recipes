@@ -12,14 +12,18 @@
                     <button class="btn btn--primary" type="submit">Save recipe</button>
                 </div>
             </div>
+            {{ form_errors(form) }}
             {{ form_widget(form.title) }}
+            {{ form_errors(form.title) }}
             <div class="field">
                 <div class="field__label">Notes</div>
                 {{ form_widget(form.notes) }}
+                {{ form_errors(form.notes) }}
             </div>
             <div class="field">
                 <div class="field__label">Photo</div>
                 {{ form_widget(form.photo) }}
+                {{ form_errors(form.photo) }}
             </div>
             <div class="field">
                 <div class="field__label">Details</div>
@@ -31,6 +35,8 @@
                         {{ form_widget(form.cookTimeMinutes) }}
                     </label>
                 </div>
+                {{ form_errors(form.servings) }}
+                {{ form_errors(form.cookTimeMinutes) }}
                 <div class="checkbox">
                     {{ form_widget(form.isPublic) }}
                     {{ form_label(form.isPublic) }}
@@ -47,6 +53,9 @@
                             {{ form_widget(ingredient.name) }}
                             <button class="row-remove" type="button" aria-label="Remove">×</button>
                         </div>
+                        {{ form_errors(ingredient.amount) }}
+                        {{ form_errors(ingredient.unit) }}
+                        {{ form_errors(ingredient.name) }}
                     {% endfor %}
                 </div>
                 <template data-prototype="ingredients">
@@ -70,6 +79,7 @@
                             {{ form_widget(step.instruction) }}
                             <button class="row-remove" type="button" aria-label="Remove">×</button>
                         </div>
+                        {{ form_errors(step.instruction) }}
                     {% endfor %}
                 </div>
                 <template data-prototype="steps">
